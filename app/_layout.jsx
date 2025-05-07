@@ -2,14 +2,15 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, StatusBar } from 'react-native';
 
 import GlobalProvider from '../context/GlobalProvider';
 import '../global.css';
+
 SplashScreen.preventAutoHideAsync();
 
 const RootStack = () => {
-  const [fontsLoaded, error] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     'Tajawal-Bold': require('../assets/fonts/Tajawal-Bold.ttf'),
     'Tajawal-Light': require('../assets/fonts/Tajawal-Light.ttf'),
     'Tajawal-Medium': require('../assets/fonts/Tajawal-Medium.ttf'),
@@ -17,24 +18,22 @@ const RootStack = () => {
   });
 
   useEffect(() => {
-    if (error) throw error;
+    if (fontError) {
+      console.error('Error loading fonts:', fontError);
+      return;
+    }
 
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, error]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  if (!fontsLoaded && !error) {
-    return null;
-  }
+  if (!fontsLoaded) return null;
 
   return (
     <GlobalProvider>
-      <SafeAreaView style={{ flex: 1, zIndex: -2, backgroundColor: '#ffffff' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
+        <StatusBar backgroundColor="#D2DDDE" />
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="Signup" options={{ headerShown: false }} />

@@ -13,6 +13,7 @@ const DropdownComponent = ({
   placeholder,
   style,
   onChange,
+  haveSearch = true,
 }) => {
   const [Value, setValue] = useState(value || null);
   const [isFocus, setIsFocus] = useState(false);
@@ -45,10 +46,10 @@ const DropdownComponent = ({
   }, [data]);
 
   return (
-    <View className={` ${style}`}>
+    <View className={`gap-2.5 ${style}`}>
       {label && (
         <View className="w-full flex-row justify-end">
-          <Text className="text-mainText font-tmedium text-base">{label}</Text>
+          <Text className="font-tmedium text-base text-mainText">{label}</Text>
         </View>
       )}
       <Dropdown
@@ -59,7 +60,7 @@ const DropdownComponent = ({
         fontFamily="Tajawal-Medium"
         iconStyle={styles.iconStyle}
         data={data}
-        search
+        search={haveSearch}
         maxHeight={300}
         labelField="value"
         valueField="key"
@@ -91,7 +92,6 @@ export default DropdownComponent;
 const styles = StyleSheet.create({
   dropdown: {
     height: 56,
-    marginTop: 10,
     borderColor: '#288B96',
     borderWidth: 0.5,
     borderRadius: 8,
@@ -102,9 +102,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   label: {
-    position: 'absolute',
-    left: 22,
-    top: 8,
     zIndex: 999,
     paddingHorizontal: 8,
     fontSize: 14,

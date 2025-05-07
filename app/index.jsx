@@ -131,7 +131,7 @@ const Welcome = () => {
                 handlePress={() => {
                   router.replace('Signup');
                 }}
-                containerStyles="mt-14"
+                containerStyles="mt-8"
                 isLoading={isSubmitting}
                 icon={icons.Signin}
               />

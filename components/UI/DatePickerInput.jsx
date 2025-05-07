@@ -6,7 +6,7 @@ import DatePicker from 'react-native-date-picker';
 
 import Calender from '../../assets/images/calender.png';
 
-const DatePickerInput = ({ setDate, title, defaultDate, birthday = false }) => {
+const DatePickerInput = ({ setDate, title, defaultDate, birthday = false, style }) => {
   const [selectedDate, setSelectedDate] = useState(
     defaultDate ? new Date(defaultDate) : new Date()
   );
@@ -43,10 +43,13 @@ const DatePickerInput = ({ setDate, title, defaultDate, birthday = false }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {title && <Text className="my-2 font-tmedium text-base font-medium ">{title}</Text>}
+    <View className={`gap-2.5 ${style}`}>
+      {title && (
+        <Text className=" text-right font-tmedium text-base font-medium text-mainText">
+          {title}
+        </Text>
+      )}
 
-      <SizedBox height={8} />
       <TouchableOpacity
         onPress={_selectDate}
         className="flex-row-reverse items-center justify-between"
@@ -93,9 +96,6 @@ const SizedBox = ({ height }) => <View style={{ height }} />;
 const Icon = ({ name, size, color }) => <Text style={{ fontSize: size, color }}>{name}</Text>;
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-  },
   padding: {},
   label: {
     fontSize: 14,
@@ -103,20 +103,18 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row-reverse',
-
     alignItems: 'center',
     width: '100%',
     borderRadius: 8,
     height: 56,
     paddingHorizontal: 8,
     borderWidth: 0.5,
-    borderColor: '#227099',
+    borderColor: '#288B96',
     paddingVertical: 8,
   },
   input: {
     padding: 8,
-
-    border: '4px solid #fff',
+    border: '4px solid',
     fontSize: 14,
     fontFamily: 'Tajawal-Medium',
     color: 'black',

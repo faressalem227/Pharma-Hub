@@ -62,6 +62,7 @@ import LogoLef from '../assets/images/logoright.jpg';
 import egyptFlag from '../assets/images/twemoji_flag-egypt.png';
 import User from '../assets/images/user.png';
 import pharmaLogo from '../assets/images/pharmaLogo.png';
+import greenArrowLeft from '../assets/images/greenArrowLeft.png';
 export default {
   pharmaLogo,
   x,
@@ -125,4 +126,5 @@ export default {
   PowerIcon,
   MechanicTime,
   ArrowCircleLeft,
+  greenArrowLeft,
 };
