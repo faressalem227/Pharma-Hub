@@ -1,15 +1,23 @@
 // app/index.js
-import React from "react";
-import {View,Text,StyleSheet,FlatList,Image,TouchableOpacity,Dimensions,} from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+// import MapView, { Marker } from 'react-native-maps';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 
 const categories = [
-  { id: "1", title: "Baby Products", image: require("../assets/images/baby.png") },
-  { id: "2", title: "Personal Care", image: require("../assets/images/baby.png") },
-  { id: "3", title: "Popular Medications", image: require("../assets/images/baby.png") },
-  { id: "4", title: "Personal Care", image: require("../assets/images/baby.png") },
+  { id: '1', title: 'Baby Products', image: require('../../assets/images/baby.png') },
+  { id: '2', title: 'Personal Care', image: require('../../assets/images/baby.png') },
+  { id: '3', title: 'Popular Medications', image: require('../../assets/images/baby.png') },
+  { id: '4', title: 'Personal Care', image: require('../../assets/images/baby.png') },
 ];
 
 export default function HomeScreen() {
@@ -29,20 +37,19 @@ export default function HomeScreen() {
 
       {/* Map */}
       <View style={styles.mapContainer}>
-        <MapView
+        {/* <MapView
           style={styles.map}
           initialRegion={{
             latitude: 30.0444, // Cairo coordinates as an example
             longitude: 31.2357,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
-          }}
-        >
+          }}>
           <Marker
             coordinate={{ latitude: 30.0444, longitude: 31.2357 }}
             title="El Marouny Pharmacy"
           />
-        </MapView>
+        </MapView> */}
       </View>
 
       {/* Categories */}
@@ -70,27 +77,27 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f4f8",
+    backgroundColor: '#f0f4f8',
   },
   header: {
     padding: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   headerText: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   mapContainer: {
     marginHorizontal: 20,
     borderRadius: 20,
-    overflow: "hidden",
+    overflow: 'hidden',
     elevation: 5,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },
   map: {
-    width: "100%",
+    width: '100%',
     height: 200,
   },
   categoriesContainer: {
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   categoryItem: {
-    alignItems: "center",
+    alignItems: 'center',
     marginRight: 15,
   },
   categoryImage: {
@@ -109,28 +116,28 @@ const styles = StyleSheet.create({
   categoryText: {
     marginTop: 5,
     fontSize: 14,
-    textAlign: "center",
+    textAlign: 'center',
   },
   moreText: {
-    color: "#00c4cc",
+    color: '#00c4cc',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 10,
-    textAlign: "right",
+    textAlign: 'right',
   },
   assistantButton: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: "#00c4cc",
+    backgroundColor: '#00c4cc',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
     elevation: 5,
   },
   assistantText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });

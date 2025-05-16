@@ -1,4 +1,12 @@
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
@@ -13,7 +21,7 @@ export default function SearchScreen() {
       <View style={styles.arrow}>
         <Ionicons name="arrow-back" size={21} color="#24828D" style={{ marginHorizontal: 5 }} />
       </View>
-        <View style={styles.searchBar}>
+      <View style={styles.searchBar}>
         <Ionicons name="search" size={20} color="#888" style={{ marginHorizontal: 5 }} />
         <TextInput
           style={styles.searchInput}
@@ -23,62 +31,65 @@ export default function SearchScreen() {
           onChangeText={setSearchQuery}
         />
         <Ionicons name="mic" size={20} color="#24828D" style={{ marginHorizontal: 10 }} />
-        <Ionicons name="camera" size={20} color="#24828D" style={{ marginRight: 10 }} /></View>
-      
+        <Ionicons name="camera" size={20} color="#24828D" style={{ marginRight: 10 }} />
+      </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         <Text style={styles.sectionTitle}>Search by categories</Text>
         <View style={styles.rowWrap}>
-          {['💊 Pain Relievers', '🤧 Cold & Allergy Medications', '🦠 Antibiotics', 'Blood Pressure & Heart Medications'].map((item, index) => (
+          {[
+            '💊 Pain Relievers',
+            '🤧 Cold & Allergy Medications',
+            '🦠 Antibiotics',
+            'Blood Pressure & Heart Medications',
+          ].map((item, index) => (
             <TouchableOpacity key={index} style={styles.categoryBtn}>
               <Text style={styles.categoryText}>{item}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
-
         <Text style={styles.sectionTitle}>Search by Active Ingredient</Text>
         <View style={styles.rowWrap}>
-          {['Paracetamol', 'Ibuprofen', 'Amoxicillin', 'Metformin', 'Cetirizine', 'Omeprazole'].map((item, index) => (
-            <TouchableOpacity key={index} style={styles.ingredientBtn}>
-              <Text style={styles.ingredientText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
+          {['Paracetamol', 'Ibuprofen', 'Amoxicillin', 'Metformin', 'Cetirizine', 'Omeprazole'].map(
+            (item, index) => (
+              <TouchableOpacity key={index} style={styles.ingredientBtn}>
+                <Text style={styles.ingredientText}>{item}</Text>
+              </TouchableOpacity>
+            )
+          )}
         </View>
-
 
         <Text style={styles.sectionTitle3}>Search by Manufacturer</Text>
         <View style={styles.rowWrap3}>
-  {[
-    {
-      name: 'Popular Medications',
-      description: 'Painkillers, cold medicine, allergy medicine',
-      img: require('../assets/images/baby.png'),
-    },
-    {
-      name: 'Baby Products',
-      description: 'Diapers, wipes, baby lotion',
-      img: require('../assets/images/baby.png'),
-    },
-    {
-      name: 'Personal Care',
-      description: 'Shampoo, soap, toothpaste',
-      img: require('../assets/images/default.jpg'),
-    },
-  ].map((item, index) => (
-    <TouchableOpacity key={index} style={styles.manufacturerCardNew}>
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{item.name}</Text>
-        <Text style={styles.subtitle}>{item.description}</Text>
-      </View>
-      <Image source={item.img} style={styles.cardImageNew} />
-    </TouchableOpacity>
-  ))}
-</View>
+          {[
+            {
+              name: 'Popular Medications',
+              description: 'Painkillers, cold medicine, allergy medicine',
+              img: require('../../assets/images/baby.png'),
+            },
+            {
+              name: 'Baby Products',
+              description: 'Diapers, wipes, baby lotion',
+              img: require('../../assets/images/baby.png'),
+            },
+            {
+              name: 'Personal Care',
+              description: 'Shampoo, soap, toothpaste',
+              img: require('../../assets/images/default.jpg'),
+            },
+          ].map((item, index) => (
+            <TouchableOpacity key={index} style={styles.manufacturerCardNew}>
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>{item.name}</Text>
+                <Text style={styles.subtitle}>{item.description}</Text>
+              </View>
+              <Image source={item.img} style={styles.cardImageNew} />
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
-
-      
-      </View>
+    </View>
   );
 }
 
@@ -91,7 +102,7 @@ const styles = StyleSheet.create({
   },
   arrow: {
     marginBottom: -40,
-    marginLeft:1,
+    marginLeft: 1,
   },
   searchBar: {
     backgroundColor: 'white',
@@ -100,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: -10,
     marginBottom: 20,
-    marginLeft:30,
+    marginLeft: 30,
   },
   searchInput: {
     flex: 1,
@@ -111,10 +122,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginVertical: 10,
-    top:-15,
+    top: -15,
     color: '#24828D',
   },
-  sectionTitle3:{
+  sectionTitle3: {
     fontSize: 16,
     fontWeight: '600',
     marginVertical: 10,
@@ -124,7 +135,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginTop:-13,
+    marginTop: -13,
   },
   rowWrap3: {
     flexWrap: 'wrap',
@@ -140,7 +151,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 14.3,
     color: '#24828D',
-    top:3,
+    top: 3,
     textAlign: 'center',
     fontWeight: '500',
   },

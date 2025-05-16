@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Switch, TouchableOpacity } from 'react-native';
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
 export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/default.jpg')} style={styles.avatar} />
+      <Image source={require('../../assets/images/default.jpg')} style={styles.avatar} />
       <Text style={styles.name}>Manar Mahmoud</Text>
       <Text style={styles.email}>Manar.mahmoud@gmail.com</Text>
 
