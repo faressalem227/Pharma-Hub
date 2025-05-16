@@ -17,10 +17,12 @@ const Welcome = () => {
   I18nManager.allowRTL(false);
 
   const [form, setForm] = useState({
-    UserName: '',
+    email: '',
     password: '',
   });
   const router = useRouter();
+
+  console.log(form);
 
   const submit = async () => {
     if (form.UserName === '' || form.password === '') {
@@ -43,7 +45,7 @@ const Welcome = () => {
     try {
       setSubmitting(true);
 
-      const result = await login(form.UserName, form.password); //fcmToken
+      const result = await login(form.email, form.password); //fcmToken
 
       Toast.show({
         type: 'success',
@@ -78,15 +80,18 @@ const Welcome = () => {
     }
   };
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
+  // useEffect(() => {
+  //   const redirectGuest = async () => {
+  //     await checkAuth(); // Wait for auth state to be checked
 
-  useEffect(() => {
-    if (isLogged && user) {
-      router.replace('/Home');
-    }
-  }, [isLogged, user]);
+  //     // Redirect guest users to Home
+  //     if (!isLogged) {
+  //       router.replace('/HomeScreen');
+  //     }
+  //   };
+
+  //   redirectGuest();
+  // }, []);
 
   return (
     <SafeAreaView className="h-full bg-white">
@@ -100,13 +105,13 @@ const Welcome = () => {
               <Text className="mb-10 text-center font-tbold text-2xl text-dark">تسجيل الدخول</Text>
               <FormField
                 inputStyle="p-4"
-                title="اسم المستخدم"
+                title="البريد الاليكتروني"
                 value={form.UserName}
-                handleChangeText={(e) => setForm({ ...form, UserName: e })}
+                handleChangeText={(e) => setForm({ ...form, email: e })}
                 otherStyles="mt-7"
                 keyboardType="email-address"
                 icon={icons.User}
-                placeholder="اسم المستخدم"
+                placeholder="البريد الاليكتروني"
                 inputIconUser={form.UserName && icons.deleteIcon}
                 handlePress={() => setForm({ ...form, UserName: '', password: '' })}
               />

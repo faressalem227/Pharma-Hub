@@ -1,3 +1,7 @@
+/* eslint-disable prettier/prettier */
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -7,10 +11,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import { useState } from 'react';
-import { useRouter } from 'expo-router';
-import { Link } from 'expo-router';
 
 export default function CategoriesScreen() {
   return (

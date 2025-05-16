@@ -11,6 +11,8 @@ function Signup() {
     isSetted: false,
   });
 
+  const [userData, setUserData] = useState({});
+
   const router = useRouter();
 
   return (

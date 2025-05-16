@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { Slot } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+
 import BottomBar from '../../components/layout/BottomBar';
 export default function Layout() {
   return (
