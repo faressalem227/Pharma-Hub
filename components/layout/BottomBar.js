@@ -7,26 +7,30 @@ export default function BottomBar() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.push('/HomeScreen')}>
+      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/HomeScreen')}>
         <Ionicons name="home" size={24} color="#24828D" />
         <Text style={styles.label}></Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.push('/categories')}>
+      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/categories')}>
         <FontAwesome5 name="pills" size={20} color="#24828D" />
         <Text style={styles.label}></Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.searchIconWrapper} onPress={() => router.push('/SearchScreen')}>
+      <TouchableOpacity
+        style={styles.searchIconWrapper}
+        onPress={() => router.navigate('/SearchScreen')}>
         <Ionicons name="search" size={28} color="white" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.push('/notifications')}>
+      <TouchableOpacity
+        style={styles.iconWrapper}
+        onPress={() => router.navigate('/notifications')}>
         <Ionicons name="notifications" size={22} color="#24828D" />
         <Text style={styles.label}></Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.push('/MoreScreen')}>
+      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/MoreScreen')}>
         <Ionicons name="menu" size={26} color="#24828D" />
         <Text style={styles.label}></Text>
       </TouchableOpacity>
@@ -47,14 +51,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     position: 'absolute',
-    bottom:11,
+    bottom: 11,
     left: 11,
     right: 11,
   },
   iconWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    top:6,
+    top: 6,
   },
   label: {
     fontSize: 11,
@@ -68,6 +72,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop:-30,
+    marginTop: -30,
   },
 });

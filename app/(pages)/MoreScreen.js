@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
 
 const items = [
   { label: 'Profile', path: './ProfileScreen' },
@@ -15,20 +15,15 @@ export default function MoreScreen() {
   const router = useRouter();
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#017B74" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>More</Text>
       </View>
-      
+
       {items.map((item, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.item}
-          onPress={() => router.push(item.path)}
-        >
+        <TouchableOpacity key={index} style={styles.item} onPress={() => router.push(item.path)}>
           <Text style={styles.text}>{item.label}</Text>
         </TouchableOpacity>
       ))}

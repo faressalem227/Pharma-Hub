@@ -77,10 +77,10 @@ function Signup() {
           {/* Address */}
           <MainButton
             title="انشاء حساب"
-            handlePress={() => {}}
+            handlePress={() => {
+              router.replace('MoreScreen');
+            }}
             containerStyles="mt-14"
-            // isLoading={isSubmitting}
-            // icon={icons.Signin}
           />
         </ScrollView>
       )}
