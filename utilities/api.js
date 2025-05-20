@@ -11,8 +11,7 @@ export const REPORT_SERVER_URL = 'http://196.219.138.210:5007/api';
 // export const REPORT_SERVER_URL = "http://196.219.138.210:5007/api";
 // const API_BASE_URL = "http://isis-eg.com:8506/api";
 
-const API_BASE_URL = 'http://192.168.1.23:8080/api/';
-
+const API_BASE_URL = 'http://138.201.157.90/api/';
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
