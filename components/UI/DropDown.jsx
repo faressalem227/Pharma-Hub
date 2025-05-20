@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import AntDesign from '@expo/vector-icons/AntDesign';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -11,45 +10,33 @@ const DropdownComponent = ({
   value,
   label,
   placeholder,
-  style,
+  style = {},
   onChange,
   haveSearch = true,
 }) => {
-  const [Value, setValue] = useState(value || null);
+  const [selectedValue, setSelectedValue] = useState(value || null);
   const [isFocus, setIsFocus] = useState(false);
 
-  const renderLabel = () => {
-    if ((Value || isFocus) && label) {
-      return <Text style={[styles.label, isFocus && { color: 'blue' }]}>{label}</Text>;
-    }
-    return null;
+  const handleChange = (option) => {
+    setSelectedValue(option?.value);
+    onChange?.(option?.value);
   };
-  useEffect(() => {
-    if (initailOption || defaultOption) {
-      console.log(value, initailOption, defaultOption);
 
-      setValue(defaultOption?.key || initailOption);
-      onChange(defaultOption?.key || initailOption);
-    }
-  }, [data, initailOption]);
+  // useEffect(() => {
+  //   const fallback = defaultOption?.value ?? initailOption;
+  //   if (fallback !== undefined) {
+  //     setSelectedValue(fallback);
+  //     onChange?.(fallback);
+  //   }
+  // }, [data, defaultOption, initailOption]);
 
-  useEffect(() => {
-    if (defaultOption) {
-      console.log(defaultOption);
-
-      setValue(defaultOption?.key);
-      onChange(defaultOption?.key);
-    } else if (initailOption) {
-      setValue(initailOption);
-      onChange(initailOption);
-    }
-  }, [data]);
+  console.log(data);
 
   return (
-    <View className={`gap-2.5 ${style}`}>
+    <View style={[{ gap: 10 }]} className={`${style}`}>
       {label && (
-        <View className="w-full flex-row justify-end">
-          <Text className="font-tmedium text-base text-mainText">{label}</Text>
+        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <Text style={styles.label}>{label}</Text>
         </View>
       )}
       <Dropdown
@@ -57,31 +44,21 @@ const DropdownComponent = ({
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
-        fontFamily="Tajawal-Medium"
         iconStyle={styles.iconStyle}
         data={data}
         search={haveSearch}
         maxHeight={300}
-        labelField="value"
-        valueField="key"
+        labelField="label"
+        valueField="value"
         placeholder={!isFocus ? placeholder : '...'}
         searchPlaceholder="بحث..."
-        value={Value}
+        value={selectedValue}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setValue(item.key);
           setIsFocus(false);
-          onChange(item.key, item.Value);
+          handleChange(item);
         }}
-        //   renderLeftIcon={() => (
-        //     <AntDesign
-        //       style={styles.icon}
-        //       color={isFocus ? 'blue' : 'black'}
-        //       name="Safety"
-        //       size={20}
-        //     />
-        //   )}
       />
     </View>
   );
@@ -98,18 +75,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontFamily: 'Tajawal-Medium',
   },
-  icon: {
-    marginRight: 5,
-  },
   label: {
-    zIndex: 999,
     paddingHorizontal: 8,
     fontSize: 14,
     fontFamily: 'Tajawal-Medium',
+    color: 'black',
   },
   placeholderStyle: {
     fontSize: 16,
     fontFamily: 'Tajawal-Medium',
+    color: '#999',
   },
   selectedTextStyle: {
     fontSize: 16,

@@ -22,7 +22,7 @@ const Welcome = () => {
   });
   const router = useRouter();
 
-  console.log(form);
+  // console.log(form);
 
   const submit = async () => {
     if (form.UserName === '' || form.password === '') {
@@ -84,10 +84,7 @@ const Welcome = () => {
   //   const redirectGuest = async () => {
   //     await checkAuth(); // Wait for auth state to be checked
 
-  //     // Redirect guest users to Home
-  //     if (!isLogged) {
-  //       router.replace('/HomeScreen');
-  //     }
+  //     router.replace('/HomeScreen');
   //   };
 
   //   redirectGuest();
@@ -140,15 +137,15 @@ const Welcome = () => {
                 isLoading={isSubmitting}
                 icon={icons.Signin}
               />
-              {/* <MainButton
+              <MainButton
                 title="FOR BEST DEV EXPERIENCE"
                 handlePress={() => {
-                  setForm({ ...form, UserName: 'host', password: '12345678' });
+                  setForm({ email: 'kamr151515@gmail.com', password: 'PharmaHub@2025' });
                 }}
                 containerStyles="mt-14"
                 isLoading={isSubmitting}
                 icon={icons.Signin}
-              /> */}
+              />
             </View>
             <Toast />
           </>

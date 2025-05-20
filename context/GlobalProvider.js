@@ -16,14 +16,14 @@ const GlobalProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const username = JSON.parse(await SecureStore.getItemAsync('UserName')) || '';
-      const UserTypeID = JSON.parse(await SecureStore.getItemAsync('UserTypeID')) || '';
+      const username = JSON.parse(await SecureStore.getItemAsync('username')) || '';
+      const email = JSON.parse(await SecureStore.getItemAsync('email')) || '';
 
       if (username) {
         setIsLogged(true);
         setUser({
           username,
-          type: UserTypeID,
+          email,
         });
       } else {
         setIsLogged(false);
@@ -37,12 +37,19 @@ const GlobalProvider = ({ children }) => {
   };
 
   const saveTokens = async (accessToken, refreshToken, user) => {
-    // //console.log(accessToken, username, lastActive, UserTypeID, UserDepartmentID, UserDepartmentName)
-    await SecureStore.setItemAsync('accessToken', JSON.stringify(accessToken));
-    await SecureStore.setItemAsync('refreshToken', JSON.stringify(refreshToken));
-    await SecureStore.setItemAsync('username', JSON.stringify(user.username));
-    await SecureStore.setItemAsync('email', JSON.stringify(user.email));
-    await SecureStore.setItemAsync('UserTypeID', JSON.stringify(user.UserTypeID));
+    // console.log('access', accessToken);
+    // console.log('refreshToken ', refreshToken);
+    // console.log('user ', user);
+
+    try {
+      await SecureStore.setItemAsync('accessToken', JSON.stringify(accessToken));
+      await SecureStore.setItemAsync('refreshToken', JSON.stringify(refreshToken));
+      await SecureStore.setItemAsync('username', JSON.stringify(user.Username));
+      await SecureStore.setItemAsync('email', JSON.stringify(user.email));
+      await SecureStore.setItemAsync('id', JSON.stringify(user.id));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -50,27 +57,29 @@ const GlobalProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password, fcmToken) => {
-    console.log('email', email);
-    console.log('password', password);
-
     try {
-      const response = await api.post(`/auth/signin`, {
+      const response = await api.post(`auth/signin`, {
         email,
         password,
       });
 
-      console.log('response', response);
+      // console.log('62 response', response.data);
 
       const { accessToken, refreshToken, user } = response.data;
+
       await saveTokens(accessToken, refreshToken, user);
 
+      // console.log('objext', accessToken, refreshToken, user);
+
       setUser({
-        username: user?.username,
-        type: user?.UserTypeID,
+        username: user?.Username,
+        email: user?.email,
+        id: user?.id,
       });
+
       setIsLogged(true);
     } catch (error) {
-      console.error('Login error:', error);
+      console.log('Login error:', error.response.data);
       return Promise.reject(error);
     }
   };

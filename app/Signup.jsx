@@ -1,9 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 
 import { FormField, Dropdown, DatePickerInput, MainButton } from '../components';
+import api from '../utilities/api';
+
+import Toast from 'react-native-toast-message';
 
 function Signup() {
   const [roleState, setRoleState] = useState({
@@ -11,9 +14,59 @@ function Signup() {
     isSetted: false,
   });
 
-  const [userData, setUserData] = useState({});
+  const [genderData, setGenderData] = useState([]);
+
+  const [form, setForm] = useState({
+    Email: '',
+    Username: '',
+    password: '',
+    LangID: 1,
+    userTypeID: 1,
+    BirthDate: '',
+    Otp: '',
+    gender: '',
+  });
+
+  const getGenderData = async () => {
+    try {
+      const response = await api.get('list?sp=gender_list');
+
+      console.log('gender', response.data.data);
+
+      setGenderData(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSignup = async () => {
+    try {
+      const response = await api.post('auth/checkUser', form);
+    } catch (error) {
+      console.log(error?.response?.data, 'error response');
+      Toast.show({
+        type: 'error',
+        text1: error?.response?.data?.message,
+        autoHide: true,
+        visibilityTime: 3000,
+        text1Style: {
+          textAlign: 'right',
+        },
+        text2Style: {
+          textAlign: 'right',
+        },
+      });
+      console.error(error);
+    }
+  };
 
   const router = useRouter();
+
+  useEffect(() => {
+    getGenderData();
+  }, []);
+
+  console.log(form);
 
   return (
     <View className="flex-1 bg-mainBg p-4">
@@ -69,23 +122,50 @@ function Signup() {
 
       {roleState.isSetted && (
         <ScrollView className="p-4">
-          <FormField title="اسم المستخدم" placeholder="اسم المستخدم" otherStyles="mb-4" />
-          <FormField title="البريد الاليكتروني" placeholder="user@gmail.com" otherStyles="mb-4" />
-          <FormField title="كلمة المرور" placeholder="كلمة المرور" otherStyles="mb-4" />
+          <FormField
+            title="اسم المستخدم"
+            placeholder="اسم المستخدم"
+            otherStyles="mb-4"
+            handleChangeText={(e) => setForm((prev) => ({ ...prev, Username: e }))}
+          />
+          <FormField
+            title="البريد الاليكتروني"
+            placeholder="user@gmail.com"
+            otherStyles="mb-4"
+            handleChangeText={(e) => setForm((prev) => ({ ...prev, Email: e }))}
+          />
+          <FormField
+            title="كلمة المرور"
+            placeholder="كلمة المرور"
+            otherStyles="mb-4"
+            handleChangeText={(e) => setForm((prev) => ({ ...prev, password: e }))}
+          />
           <View className="mb-4 flex-row gap-2">
-            <DatePickerInput title="تاريخ الميلاد" style="w-1/2" />
-            <Dropdown label="النوع" style="w-1/2" placeholder="" haveSearch={false} />
+            <DatePickerInput
+              title="تاريخ الميلاد"
+              style="w-1/2"
+              onChange={(e) => setForm((prev) => ({ ...prev, BirthDate: e }))}
+            />
+            <Dropdown
+              data={genderData}
+              label="النوع"
+              style="w-1/2"
+              placeholder=""
+              haveSearch={false}
+              onSelect={(value) => setForm((prev) => ({ ...prev, gender: value }))}
+            />
           </View>
-          {/* Address */}
           <MainButton
             title="انشاء حساب"
             handlePress={() => {
-              router.replace('MoreScreen');
+              handleSignup();
             }}
             containerStyles="mt-14"
           />
         </ScrollView>
       )}
+
+      <Toast />
     </View>
   );
 }

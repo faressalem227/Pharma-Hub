@@ -1,106 +1,68 @@
 /* eslint-disable prettier/prettier */
 import moment from 'moment-timezone';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import DatePicker from 'react-native-date-picker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import Calender from '../../assets/images/calender.png';
 
-const DatePickerInput = ({ setDate, title, defaultDate, birthday = false, style }) => {
+const DatePickerInput = ({ onChange, setDate, title, defaultDate, birthday = false, style }) => {
   const [selectedDate, setSelectedDate] = useState(
     defaultDate ? new Date(defaultDate) : new Date()
   );
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
 
-  const _selectDate = async () => {
-    setShowDatePicker(true);
-  };
-
-  const onDateChange = (event, date) => {
-    setShowDatePicker(false);
-    if (date) {
-      const date1 = new Date(date);
-
-      setSelectedDate(date);
-
-      const cairoTime = moment(date).tz('Africa/Cairo').format('YYYY-MM-DD HH:mm:ss');
-
-      setDate && setDate(cairoTime);
-    }
+  const handleConfirm = (date) => {
+    setShowPicker(false);
+    const cairoTime = moment(date).tz('Africa/Cairo').format('YYYY-MM-DD HH:mm:s');
+    setSelectedDate(date);
+    setDate && setDate(cairoTime);
+    onChange && onChange(cairoTime);
   };
 
   useEffect(() => {
     const date = defaultDate ? new Date(defaultDate) : new Date();
-    const date1 = new Date(date);
-
-    setSelectedDate(date);
-
-    const cairoTime = moment(date).tz('Africa/Cairo').format('YYYY-MM-DD HH:mm:ss');
-    const cairoDate = moment(date).tz('Africa/Cairo').format('YYYY-MM-DD');
-
-    setDate && setDate(cairoTime);
-    setSelectedDate(new Date(cairoDate));
+    handleConfirm(date);
   }, []);
 
   return (
     <View className={`gap-2.5 ${style}`}>
       {title && (
-        <Text className=" text-right font-tmedium text-base font-medium text-mainText">
-          {title}
-        </Text>
+        <Text className="text-right font-tmedium text-base font-medium text-mainText">{title}</Text>
       )}
 
       <TouchableOpacity
-        onPress={_selectDate}
+        onPress={() => setShowPicker(true)}
         className="flex-row-reverse items-center justify-between"
         style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          value={selectedDate.toISOString().substring(0, 10)}
+          value={moment(selectedDate).format('YYYY-MM-DD')}
           editable={false}
           placeholder="أدخل التاريخ"
           placeholderTextColor="#aaa"
         />
-        {/* <TouchableOpacity onPress={_selectDate}> */}
         <Image
           source={Calender}
           style={{ width: 20, height: 20, marginLeft: 8 }}
           resizeMode="contain"
         />
       </TouchableOpacity>
-      {/* </TouchableOpacity> */}
-      {showDatePicker && (
-        <DatePicker
-          date={selectedDate}
-          mode="date"
-          timeZoneName="Africa/Cairo"
-          display="default"
-          minimumDate={new Date(1960, 0, 1)}
-          {...(birthday && { maximumDate: new Date() })}
-          onDateChange={onDateChange}
-          customStyles={{
-            placeholderText: {
-              color: 'green', // Changse the placeholder text color
-            },
-          }}
-        />
-      )}
+
+      <DateTimePickerModal
+        isVisible={showPicker}
+        mode="date"
+        date={selectedDate}
+        onConfirm={handleConfirm}
+        onCancel={() => setShowPicker(false)}
+        maximumDate={birthday ? new Date() : undefined}
+        minimumDate={new Date(1960, 0, 1)}
+      />
     </View>
   );
 };
 
-const Padding = ({ children }) => <View style={styles.padding}>{children}</View>;
-
-const SizedBox = ({ height }) => <View style={{ height }} />;
-
-const Icon = ({ name, size, color }) => <Text style={{ fontSize: size, color }}>{name}</Text>;
-
 const styles = StyleSheet.create({
-  padding: {},
-  label: {
-    fontSize: 14,
-    fontFamily: 'Tajawal-Bold',
-  },
   inputContainer: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
@@ -113,8 +75,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   input: {
+    flex: 1,
     padding: 8,
-    border: '4px solid',
     fontSize: 14,
     fontFamily: 'Tajawal-Medium',
     color: 'black',
