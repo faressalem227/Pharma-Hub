@@ -80,15 +80,13 @@ const Welcome = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const redirectGuest = async () => {
-  //     await checkAuth(); // Wait for auth state to be checked
-
-  //     router.replace('/HomeScreen');
-  //   };
-
-  //   redirectGuest();
-  // }, []);
+  useEffect(() => {
+    const redirectGuest = async () => {
+      await checkAuth(); // Wait for auth state to be checked
+      router.replace('/HomeScreen');
+    };
+    redirectGuest();
+  }, []);
 
   return (
     <SafeAreaView className="h-full bg-white">
