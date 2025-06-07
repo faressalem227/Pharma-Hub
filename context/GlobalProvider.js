@@ -5,7 +5,26 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { HandleDropdownFormat } from '../hooks/useDropDownData';
 import api from '../utilities/api';
 
-const GlobalContext = createContext();
+const GlobalContext = createContext({
+  login: async () => {},
+  logOut: async () => {},
+  isLogged: false,
+  setIsLogged: () => {},
+  setLoading: () => {},
+  user: {
+    username: '',
+    email: '',
+    userImage: '',
+    id: 0,
+  },
+  setUser: () => {},
+  loading: false,
+  checkAuth: () => {},
+  getFunction: () => {},
+  postFunction: () => {},
+  putFunction: () => {},
+  deleteFunction: () => {},
+});
 
 export const useGlobalContext = () => useContext(GlobalContext);
 
@@ -44,8 +63,9 @@ const GlobalProvider = ({ children }) => {
     try {
       await SecureStore.setItemAsync('accessToken', JSON.stringify(accessToken));
       await SecureStore.setItemAsync('refreshToken', JSON.stringify(refreshToken));
-      await SecureStore.setItemAsync('username', JSON.stringify(user.Username));
+      await SecureStore.setItemAsync('username', JSON.stringify(user.username));
       await SecureStore.setItemAsync('email', JSON.stringify(user.email));
+      await SecureStore.setItemAsync('userImage', JSON.stringify(user.userImage));
       await SecureStore.setItemAsync('id', JSON.stringify(user.id));
     } catch (error) {
       console.error(error);
@@ -66,7 +86,7 @@ const GlobalProvider = ({ children }) => {
       // console.log('62 response', response.data);
 
       const { accessToken, refreshToken, user } = response.data;
-
+      console.log(response.data);
       await saveTokens(accessToken, refreshToken, user);
 
       // console.log('objext', accessToken, refreshToken, user);
@@ -74,10 +94,12 @@ const GlobalProvider = ({ children }) => {
       setUser({
         username: user?.Username,
         email: user?.email,
+        userImage: user?.UserImage,
         id: user?.id,
       });
 
       setIsLogged(true);
+      return true;
     } catch (error) {
       console.log('Login error:', error.response.data);
       return Promise.reject(error);
@@ -138,30 +160,29 @@ const GlobalProvider = ({ children }) => {
 
   const logOut = async () => {
     try {
-      const response = await api.get('/auth/signout');
-      //(response);
+      const response = await api.post('auth/signOut');
 
       await SecureStore.deleteItemAsync('accessToken');
       await SecureStore.deleteItemAsync('refreshToken');
       await SecureStore.deleteItemAsync('username');
+      await SecureStore.deleteItemAsync('userImage');
       await SecureStore.deleteItemAsync('UserTypeID');
-      await SecureStore.deleteItemAsync('UserDepartmentID');
-      await SecureStore.deleteItemAsync('UserDepartmentName');
       await SecureStore.deleteItemAsync('email');
       setIsLogged(false);
       setUser(null);
+      return true;
     } catch (error) {
       console.error('Error during logout:', error);
       if (error.response?.status === 401 || error.response?.status === 403) {
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
         await SecureStore.deleteItemAsync('username');
+        await SecureStore.deleteItemAsync('userImage');
         await SecureStore.deleteItemAsync('UserTypeID');
-        await SecureStore.deleteItemAsync('UserDepartmentID');
-        await SecureStore.deleteItemAsync('UserDepartmentName');
         await SecureStore.deleteItemAsync('email');
         setIsLogged(false);
         setUser(null);
+        return true;
       }
       return Promise.reject(error);
     }
@@ -170,10 +191,10 @@ const GlobalProvider = ({ children }) => {
   return (
     <GlobalContext.Provider
       value={{
+        login,
         logOut,
         isLogged,
         setIsLogged,
-        login,
         setLoading,
         user,
         setUser,

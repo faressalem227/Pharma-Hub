@@ -28,7 +28,7 @@ const DatePickerInput = ({ onChange, setDate, title, defaultDate, birthday = fal
   return (
     <View className={`gap-2.5 ${style}`}>
       {title && (
-        <Text className="text-right font-tmedium text-base font-medium text-mainText">{title}</Text>
+        <Text className="text-secndryText font-tmedium text-base font-medium ">{title}</Text>
       )}
 
       <TouchableOpacity
@@ -39,7 +39,7 @@ const DatePickerInput = ({ onChange, setDate, title, defaultDate, birthday = fal
           style={styles.input}
           value={moment(selectedDate).format('YYYY-MM-DD')}
           editable={false}
-          placeholder="أدخل التاريخ"
+          placeholder="Enter date"
           placeholderTextColor="#aaa"
         />
         <Image
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 56,
     paddingHorizontal: 8,
-    borderWidth: 0.5,
-    borderColor: '#288B96',
+    borderWidth: 1,
+    borderColor: '#595959',
     paddingVertical: 8,
   },
   input: {

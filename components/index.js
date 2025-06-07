@@ -11,15 +11,18 @@ import PopUpConfirmation from './UI/PopUpConfirmation';
 import ScrollComponent from './UI/ScrollComponent';
 import SearchInput from './UI/SearchInput';
 import WelcomeCard from './UI/WelcomeCard';
+import PopUp from './UI/popUp';
+import PopUpOper from './UI/popUpOper';
+import BottomBar from './layout/BottomBar';
+import CustomMenu from './layout/CustomMenu';
+import ErrorMassege from './layout/ErrorMassege';
+import HeaderBar from './layout/HeaderBar';
 import LogoBar from './layout/LogoBar';
+import MainLayout from './layout/MainLayout';
+import OtpLayout from './layout/OtpLayout';
 import UserInfo from './layout/UserInfo';
 import Header from './layout/header';
-import PopUp from './UI/popUp';
-import CustomMenu from './layout/CustomMenu';
 import Notifcation from './notifcation/Notifcation';
-import PopUpOper from './UI/popUpOper';
-import MainLayout from './layout/MainLayout';
-import ErrorMassege from './layout/ErrorMassege';
 import Table from './table/Table';
 
 export {
@@ -45,4 +48,7 @@ export {
   CustomButton,
   CheckBox,
   Table,
+  HeaderBar,
+  BottomBar,
+  OtpLayout,
 };

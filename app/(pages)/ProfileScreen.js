@@ -1,12 +1,55 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, Switch, TouchableOpacity } from 'react-native';
+/* eslint-disable prettier/prettier */
 import { useRouter } from 'expo-router';
+import { View, Text, StyleSheet, Image, Switch, TouchableOpacity } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+
+import { useGlobalContext } from '../../context/GlobalProvider';
+
 export default function ProfileScreen() {
+  const { isLogged, logOut, user } = useGlobalContext();
+
+  const router = useRouter();
+
+  const handleLogOut = async () => {
+    try {
+      const response = await logOut();
+      if (response) {
+        router.replace('/');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Image source={require('../../assets/images/default.jpg')} style={styles.avatar} />
-      <Text style={styles.name}>Manar Mahmoud</Text>
-      <Text style={styles.email}>Manar.mahmoud@gmail.com</Text>
+    <View className="flex-1 items-center bg-white p-4">
+      <View className="flex-row">
+        <View className="flex-1 flex-row items-center gap-1">
+          <TouchableOpacity onPress={() => router.back()}>
+            <Svg
+              width="20"
+              height="20"
+              viewBox="0 0 25 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <Path
+                d="M16.81 3L7.5 12.31L16.81 21.62"
+                stroke="#595959"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </Svg>
+          </TouchableOpacity>
+          <Text className="text-secndryText text-2xl font-bold">Profile</Text>
+        </View>
+      </View>
+
+      <View className="mt-5 items-center">
+        <Image source={require('../../assets/images/default.jpg')} style={styles.avatar} />
+        <Text style={styles.name}>{isLogged ? user?.username : 'Manar Mahmoud'}</Text>
+        <Text style={styles.email}>{isLogged ? user?.email : 'Manar.mahmoud@gmail.com'}</Text>
+      </View>
 
       <View style={styles.section}>
         <Text style={styles.label}>Saved Locations</Text>
@@ -19,7 +62,7 @@ export default function ProfileScreen() {
 
       <View style={styles.switchRow}>
         <Text style={styles.label}>Notifications</Text>
-        <Switch value={true} />
+        <Switch value />
       </View>
 
       <View style={styles.switchRow}>
@@ -32,7 +75,7 @@ export default function ProfileScreen() {
         <Text style={styles.value}>English</Text>
       </View>
 
-      <TouchableOpacity style={styles.logout}>
+      <TouchableOpacity style={styles.logout} onPress={() => handleLogOut()}>
         <Text style={{ color: '#C62828' }}>Log Out</Text>
       </TouchableOpacity>
     </View>
@@ -40,7 +83,6 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingTop: 60, alignItems: 'center' },
   avatar: { width: 80, height: 80, borderRadius: 40, marginBottom: 10 },
   name: { fontSize: 18, fontWeight: 'bold' },
   email: { color: '#888', marginBottom: 20 },

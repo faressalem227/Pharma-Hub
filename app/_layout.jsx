@@ -32,11 +32,13 @@ const RootStack = () => {
 
   return (
     <GlobalProvider>
+      <StatusBar backgroundColor="white" barStyle="dark-content" />
       <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
-        <StatusBar backgroundColor="#D2DDDE" />
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="Signin" options={{ headerShown: false }} />
           <Stack.Screen name="Signup" options={{ headerShown: false }} />
+          <Stack.Screen name="Reset" options={{ headerShown: false }} />
           <Stack.Screen name="(pages)" options={{ headerShown: false }} />
         </Stack>
       </SafeAreaView>

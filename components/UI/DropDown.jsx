@@ -22,20 +22,12 @@ const DropdownComponent = ({
     onChange?.(option?.value);
   };
 
-  // useEffect(() => {
-  //   const fallback = defaultOption?.value ?? initailOption;
-  //   if (fallback !== undefined) {
-  //     setSelectedValue(fallback);
-  //     onChange?.(fallback);
-  //   }
-  // }, [data, defaultOption, initailOption]);
-
-  console.log(data);
+  useEffect(() => {}, [value]);
 
   return (
     <View style={[{ gap: 10 }]} className={`${style}`}>
       {label && (
-        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <View style={{ width: '100%', flexDirection: 'row' }}>
           <Text style={styles.label}>{label}</Text>
         </View>
       )}
@@ -51,7 +43,7 @@ const DropdownComponent = ({
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? placeholder : '...'}
-        searchPlaceholder="بحث..."
+        searchPlaceholder="search..."
         value={selectedValue}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
@@ -69,8 +61,8 @@ export default DropdownComponent;
 const styles = StyleSheet.create({
   dropdown: {
     height: 56,
-    borderColor: '#288B96',
-    borderWidth: 0.5,
+    borderColor: '#595959',
+    borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
     fontFamily: 'Tajawal-Medium',

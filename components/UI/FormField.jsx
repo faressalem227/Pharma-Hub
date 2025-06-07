@@ -27,6 +27,7 @@ const FormField = ({
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+
   const handleDecimalInput = (text, setValue) => {
     const validatedText = text.replace(/[^0-9.]/g, ''); // Allow only numbers and decimal points
     setValue(validatedText, inputName);
@@ -34,19 +35,16 @@ const FormField = ({
   return (
     <View className={` ${otherStyles}`}>
       {haveTitle && (
-        <View className="mb-4 flex flex-row justify-end">
-          <Text className=" text-mainText text-right font-tmedium text-base shadow-md">
-            {title}
-          </Text>
-
+        <View className="mb-4 flex-row items-center gap-2">
           {icon ? <Image source={icon} resizeMode="contain" className="ml-1 h-6 w-6" /> : ''}
+          <Text className=" text-right font-tmedium text-lg text-secndryText">{title}</Text>
         </View>
       )}
-      <View className="bg-#FEFEFE border-mainText focus:border-mainText flex h-14 w-full flex-row items-center rounded-lg border-[0.5px] px-4">
-        {title === 'كلمة المرور' && (
+      <View className="flex h-14 w-full flex-row items-center rounded-lg border border-secndryText px-4">
+        {title === 'Password' && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
-              source={!showPassword ? icons.eyeIcon : icons.eyeSlash}
+              source={showPassword ? icons.eyeIcon : icons.eyeSlash}
               className="h-6 w-6"
               resizeMode="contain"
             />
@@ -73,13 +71,11 @@ const FormField = ({
           autoCapitalize="none"
           editable={!!editable}
           multiline={title !== 'كلمة المرور'}
-          className={`flex-1 text-right font-tregular text-base leading-5 text-dark
-						 ${inputStyle ? inputStyle : ''}
-						`}
+          className={`flex-1 font-tregular text-base leading-5 text-dark ${inputStyle ? inputStyle : ''} `}
           value={value}
           keyboardType={numeric ? 'numeric' : ''}
           placeholder={placeholder}
-          placeholderTextColor="#2B2B2B80"
+          placeholderTextColor="#B5B5B5"
           onChangeText={(e) => {
             if (numeric) handleDecimalInput(e, handleChangeText);
             else handleChangeText(e, inputName);

@@ -1,38 +1,38 @@
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+/* eslint-disable prettier/prettier */
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 export default function BottomBar() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/HomeScreen')}>
+      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/')}>
         <Ionicons name="home" size={24} color="#24828D" />
-        <Text style={styles.label}></Text>
+        <Text style={styles.label} />
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/categories')}>
         <FontAwesome5 name="pills" size={20} color="#24828D" />
-        <Text style={styles.label}></Text>
+        <Text style={styles.label} />
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.searchIconWrapper}
-        onPress={() => router.navigate('/SearchScreen')}>
-        <Ionicons name="search" size={28} color="white" />
+      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/SearchScreen')}>
+        <Ionicons name="search" size={28} color="#24828D" />
+        <Text style={styles.label} />
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.iconWrapper}
         onPress={() => router.navigate('/notifications')}>
-        <Ionicons name="notifications" size={22} color="#24828D" />
-        <Text style={styles.label}></Text>
+        <Ionicons name="alarm" size={22} color="#24828D" />
+        <Text style={styles.label} />
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/MoreScreen')}>
         <Ionicons name="menu" size={26} color="#24828D" />
-        <Text style={styles.label}></Text>
+        <Text style={styles.label} />
       </TouchableOpacity>
     </View>
   );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     position: 'absolute',
-    bottom: 11,
+    bottom: 25,
     left: 11,
     right: 11,
   },
