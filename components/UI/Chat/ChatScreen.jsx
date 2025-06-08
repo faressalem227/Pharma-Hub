@@ -1,5 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Dimensions,
+  Platform,
+} from 'react-native';
 import { FlatList } from 'react-native';
 export default function ChatScreen({ messages, onSendMessage, UserID }) {
   const [newMessage, setNewMessage] = useState('');
@@ -9,36 +19,45 @@ export default function ChatScreen({ messages, onSendMessage, UserID }) {
     setNewMessage('');
   };
   const flatListRef = useRef(null);
-
+  console.log(Platform.OS);
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS == 'ios' ? 'padding' : undefined} // Adjust based on your platform
+      enabled
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={50}>
       <FlatList
         data={messages} // Reverse to show the latest message at the bottom
         scrollEnabled={true}
+        snapToEnd={true}
         ref={flatListRef}
+        style={styles.chatContainer}
         keyExtractor={(item) => item.ID.toString()}
         renderItem={({ item: msg }) => (
           <View
             style={[
               styles.messageContainer,
-              msg.Sender === UserID ? styles.sentMessage : styles.receivedMessage,
+              msg.Sender == UserID ? styles.sentMessage : styles.receivedMessage,
             ]}>
-            <Text style={styles.sender}>{msg.SenderName}</Text>
+            {/* <Text style={styles.sender}>{msg.SenderName}</Text> */}
             <Text style={styles.text}>{msg.Message}</Text>
             <View style={styles.metadata}>
-              <Text style={styles.timestamp}>{msg.TimeStamp}</Text>
+              <Text style={styles.timestamp}>{new Date(msg.TimeStamp)?.toLocaleTimeString()}</Text>
               {msg.Sender === UserID && (
-                <Text style={styles.readStatus}>{msg.IsRead ? 'Read' : 'Sent'}</Text>
+                <Text style={styles.readStatus}>{msg.IsRead ? '✓✓' : '✓'}</Text>
               )}
             </View>
           </View>
         )}
         // contentContainerStyle={styles.chatContainer}
-        onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
-        onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
-      />
 
-      {/* Input Box */}
+        maxToRenderPerBatch={10}
+        initialNumToRender={10}
+        inverted
+
+        // onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: false })}
+        // onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
+      />
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -50,20 +69,21 @@ export default function ChatScreen({ messages, onSendMessage, UserID }) {
           <Text style={styles.sendButtonText}>Send</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
   },
   chatContainer: {
     flex: 1,
     padding: 10,
   },
   messageContainer: {
+    minWidth: '40%',
     marginVertical: 5,
     padding: 10,
     borderRadius: 10,
@@ -81,12 +101,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
   },
   metadata: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 5,
+    justifyContent: 'flex-end',
+    marginTop: 8,
+    gap: 10,
   },
   timestamp: {
     fontSize: 12,

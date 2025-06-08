@@ -10,9 +10,12 @@ import { socket } from './_layout';
 import ChatScreen from '../../components/UI/Chat/ChatScreen';
 import { icons } from '../../constants';
 export default function Chat() {
-  const { ChatID, UserPhoto, ChatTitle } = useLocalSearchParams();
+  const { ChatID, UserPhoto, ChatTitle, ReceiverID } = useLocalSearchParams();
   const [messages, setMessages] = useState([]);
-  const { user } = useGlobalContext();
+  const {
+    user: { id: UserID },
+  } = useGlobalContext();
+  console.log(UserID);
   const router = useRouter();
   const getMessage = async () => {
     try {
@@ -23,14 +26,29 @@ export default function Chat() {
       console.error('Error fetching messages:', error);
     }
   };
+  console.log(ReceiverID);
 
+  const sendMessage = async (message) => {
+    socket.emit(
+      'sendMessage',
+      { senderID: UserID, receiverID: ReceiverID, message: message, ChatID: ChatID },
+      (response) => {
+        if (!ChatID) {
+          ChatID = response.ChatID;
+        }
+        console.log(response.sentMessage);
+        setMessages((prevMessages) => [response.sentMessage, ...prevMessages]);
+      }
+    );
+  };
   useEffect(() => {
     socket.emit('joinChatRoom', { ChatID }, (response) => {
       console.log('Joined chat:', response);
     });
     socket.on('receiveMessage', (message) => {
       console.log('New message received:', message);
-      setMessages((prevMessages) => [...prevMessages, message]);
+      console.log(messages);
+      setMessages((prevMessages) => [message, ...prevMessages]);
     });
 
     return () => {
@@ -98,7 +116,7 @@ export default function Chat() {
         </View>
       </View>
 
-      <ChatScreen messages={messages}></ChatScreen>
+      <ChatScreen messages={messages} UserID={UserID} onSendMessage={sendMessage}></ChatScreen>
     </View>
   );
 }

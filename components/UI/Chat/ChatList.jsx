@@ -15,7 +15,12 @@ const ChatList = ({ chats, onChatPress }) => {
       onPress={() =>
         router.navigate({
           pathname: '/Chat',
-          params: { ChatID: item.ChatID, ChatTitle: item.ChatTitle, UserPhoto: item.UserPhoto },
+          params: {
+            ChatID: item.ChatID,
+            ChatTitle: item.ChatTitle,
+            UserPhoto: item.UserPhoto,
+            ReceiverID: item.ReceiverID,
+          },
         })
       }>
       {item.UserPhoto ? (
@@ -53,7 +58,7 @@ const ChatList = ({ chats, onChatPress }) => {
           </Text>
         </View>
         <Text style={styles.lastMessage} numberOfLines={1}>
-          {item.Message}
+          {item.SenderName}: {item.Message}
         </Text>
       </View>
       {item.IsRead == 0 && item.LastReciverID == id ? (

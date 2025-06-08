@@ -12,7 +12,6 @@ import { useGlobalContext } from '../context/GlobalProvider';
 const Signin = () => {
   const { isLogged, user, loading, checkAuth, login } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
-
   useEffect(() => {
     I18nManager.forceRTL(false);
     I18nManager.allowRTL(false);
