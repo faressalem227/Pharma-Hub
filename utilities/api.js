@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 
 export const REPORT_SERVER_URL = 'http://196.219.138.210:5007/api';
 
-const API_BASE_URL = 'http://138.201.157.90/api/';
+const API_BASE_URL = 'http://192.168.1.44:8080/api/';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,8 +15,11 @@ const api = axios.create({
 api.interceptors.request.use(
   async (config) => {
     try {
-      const accessToken = await SecureStore.getItemAsync('accessToken');
+      let accessToken = await SecureStore.getItemAsync('accessToken');
+      console.log('first', accessToken);
       if (accessToken) {
+        accessToken = accessToken.replace(/"/g, '');
+        console.log('sec', accessToken);
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
     } catch (error) {

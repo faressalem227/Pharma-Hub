@@ -16,7 +16,7 @@ export default function HomeScreen() {
       const req = await api.get('drug/fillter?query=paramol&fillterType=1');
       const res = req.data;
       setData(res);
-      console.log('data', res);
+      // console.log('data', res);
     } catch (error) {
       // Error retrieving data
       console.error('Error fetching data:', error);

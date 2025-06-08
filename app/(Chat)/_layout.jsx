@@ -1,0 +1,47 @@
+/* eslint-disable prettier/prettier */
+import { Slot, useRouter } from 'expo-router';
+import { use, useEffect } from 'react';
+import { Touchable, TouchableOpacity, View } from 'react-native';
+
+// import { BottomBar } from '../../components';
+import { io } from 'socket.io-client';
+
+import { useGlobalContext } from '../../context/GlobalProvider';
+import { Image } from 'expo-image';
+import { icons } from '../../constants';
+export const socket = io('http://192.168.1.44:8080', {
+  transports: ['websocket'],
+  autoConnect: true,
+});
+
+export default function Layout() {
+  const router = useRouter();
+  const {
+    user: { id },
+  } = useGlobalContext();
+
+  console.log(id);
+  useEffect(() => {
+    socket.emit(
+      'register',
+      {
+        UserID: id,
+      },
+      (response) => {
+        console.log('Registration response:', response);
+      }
+    );
+
+    return () => {
+      console.log('Disconnecting from socket server...');
+      socket.emit('diconnect', { UserID: id }, (response) => {
+        console.log('Disconnection response:', response);
+      });
+    };
+  }, [id]);
+  return (
+    <View style={{ flex: 1 }}>
+      <Slot />
+    </View>
+  );
+}

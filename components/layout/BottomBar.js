@@ -2,12 +2,13 @@
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function BottomBar() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginBottom: insets.bottom - 5 }]}>
       <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/')}>
         <Ionicons name="home" size={24} color="#24828D" />
         <Text style={styles.label} />

@@ -15,7 +15,7 @@ const HeaderBar = () => {
         <View className="flex-row items-center gap-5">
           <View className="h-6 w-6 rounded-full bg-white">
             {(!isLogged || !user?.userImage) && (
-              <TouchableOpacity onPress={() => router.navigate('/Signin')}>
+              <TouchableOpacity onPress={() => router.push('/Signin')}>
                 <Svg
                   width="24"
                   height="24"
@@ -42,7 +42,7 @@ const HeaderBar = () => {
               <Image source={user?.userImage} className="object-contain" />
             )}
           </View>
-          <Text className="text-secndryText text-2xl font-bold">
+          <Text className="text-2xl font-bold text-secndryText">
             {isLogged ? user?.username : 'Guest'}
           </Text>
         </View>
@@ -74,7 +74,7 @@ const HeaderBar = () => {
             </Svg>
           </TouchableOpacity>
 
-          <TouchableOpacity className="pt-1" onPress={() => router.navigate('/ChatScreen')}>
+          <TouchableOpacity className="pt-1" onPress={() => router.navigate('/ChatList')}>
             <Svg
               width="30"
               height="30"

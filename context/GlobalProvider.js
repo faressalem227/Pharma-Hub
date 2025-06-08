@@ -37,12 +37,15 @@ const GlobalProvider = ({ children }) => {
     try {
       const username = JSON.parse(await SecureStore.getItemAsync('username')) || '';
       const email = JSON.parse(await SecureStore.getItemAsync('email')) || '';
-
+      const userImage = JSON.parse(await SecureStore.getItemAsync('userImage')) || '';
+      const id = JSON.parse(await SecureStore.getItemAsync('id')) || 0;
       if (username) {
         setIsLogged(true);
         setUser({
           username,
           email,
+          userImage,
+          id,
         });
       } else {
         setIsLogged(false);
@@ -59,13 +62,12 @@ const GlobalProvider = ({ children }) => {
     // console.log('access', accessToken);
     // console.log('refreshToken ', refreshToken);
     // console.log('user ', user);
-
+    console.log(accessToken, user.Username, user.email, user.userImage, user.id);
     try {
       await SecureStore.setItemAsync('accessToken', JSON.stringify(accessToken));
-      await SecureStore.setItemAsync('refreshToken', JSON.stringify(refreshToken));
-      await SecureStore.setItemAsync('username', JSON.stringify(user.username));
+      await SecureStore.setItemAsync('username', JSON.stringify(user.Username));
       await SecureStore.setItemAsync('email', JSON.stringify(user.email));
-      await SecureStore.setItemAsync('userImage', JSON.stringify(user.userImage));
+      await SecureStore.setItemAsync('userImage', JSON.stringify(user.userImage || ''));
       await SecureStore.setItemAsync('id', JSON.stringify(user.id));
     } catch (error) {
       console.error(error);

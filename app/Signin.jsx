@@ -13,8 +13,10 @@ const Signin = () => {
   const { isLogged, user, loading, checkAuth, login } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
 
-  I18nManager.forceRTL(false);
-  I18nManager.allowRTL(false);
+  useEffect(() => {
+    I18nManager.forceRTL(false);
+    I18nManager.allowRTL(false);
+  }, []);
 
   const [form, setForm] = useState({
     email: '',
