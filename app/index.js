@@ -6,17 +6,14 @@ import api from '../utilities/api';
 import { Platform } from 'react-native';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useGlobalContext } from '../context/GlobalProvider';
-const { width } = Dimensions.get('window');
 export default function HomeScreen() {
   const [data, setData] = useState([]);
-  const { login } = useGlobalContext();
 
   const getDrugAsync = async () => {
     try {
       const req = await api.get('drug/fillter?query=paramol&fillterType=1');
       const res = req.data;
       setData(res);
-      // console.log('data', res);
     } catch (error) {
       // Error retrieving data
       console.error('Error fetching data:', error);
@@ -24,9 +21,9 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    if (Platform.OS === 'ios') {
-      login('kamr151515@icloud.com', 'PharmaHub@2025');
-    }
+    // if (Platform.OS === 'ios') {
+    //   login('kamr151515@icloud.com', 'PharmaHub@2025');
+    // }
     getDrugAsync();
   }, []);
 
@@ -65,7 +62,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   map: {
     width: '100%',
     height: '100%',

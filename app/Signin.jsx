@@ -22,20 +22,29 @@ const Signin = () => {
     password: '',
   });
   const router = useRouter();
-  // const requestPermission = async () => {
-  //   const authStatus = await messaging().requestPermission();
+
+  // async function requestUserPermission() {
+  //   const authStatus = await messaging().requestPermission({
+  //     alert: true,
+  //     sound: true,
+  //     badge: true,
+  //   });
+
   //   const enabled =
   //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
   //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  //   if (enabled) {
-  //     console.log('Authorization status:', authStatus);
-  //   }
-  // };
+  //   console.log('Notification permission status:', authStatus);
+  //   return enabled;
+  // }
+
   // const getFcmToken = async () => {
+  //   const permession = await requestUserPermission();
+  //   await messaging().registerDeviceForRemoteMessages();
+
   //   const token = await messaging().getToken();
   //   console.log('FCM Token:', token);
-  //   return token;
+  //   return permession ? token : null;
   // };
   const submit = async () => {
     if (form.email === '' || form.password === '') {
@@ -56,11 +65,7 @@ const Signin = () => {
     }
     try {
       setSubmitting(true);
-      // const permission = await requestPermission(); // Uncomment if you want to request permission first
-      let fcmToken = null;
-      // if (permission) {
-      //   fcmToken = await getFcmToken();
-      // }
+      const fcmToken = await getFcmToken();
       const response = await login(form.email, form.password, fcmToken); //fcmToken
       if (response) {
         Toast.show({
@@ -72,8 +77,6 @@ const Signin = () => {
             textAlign: 'left',
           },
         });
-
-        setTimeout(() => {}, 2000);
 
         router.replace('/');
       }
