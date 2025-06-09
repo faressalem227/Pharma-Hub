@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { useRouter } from 'expo-router';
-import { View, Text, StyleSheet, Image, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Switch, TouchableOpacity } from 'react-native';
 import Svg, { Path, G, Defs, ClipPath, Rect } from 'react-native-svg';
 
+import { Navback } from '../../components';
 import { useGlobalContext } from '../../context/GlobalProvider';
 
 export default function ProfileScreen() {
@@ -24,25 +25,7 @@ export default function ProfileScreen() {
   return (
     <View className="flex-1 bg-white p-4">
       <View className="flex-row">
-        <View className="flex-1 flex-row items-center gap-1">
-          <TouchableOpacity onPress={() => router.back()}>
-            <Svg
-              width="20"
-              height="20"
-              viewBox="0 0 25 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <Path
-                d="M16.81 3L7.5 12.31L16.81 21.62"
-                stroke="#595959"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </Svg>
-          </TouchableOpacity>
-          <Text className="text-2xl font-bold text-secndryText">Profile</Text>
-        </View>
+        <Navback title="Profile" />
 
         <TouchableOpacity>
           <Svg

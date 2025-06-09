@@ -31,6 +31,7 @@ const DropdownComponent = ({
           <Text style={styles.label}>{label}</Text>
         </View>
       )}
+
       <Dropdown
         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
         placeholderStyle={styles.placeholderStyle}
@@ -81,6 +82,7 @@ const styles = StyleSheet.create({
   selectedTextStyle: {
     fontSize: 16,
     fontFamily: 'Tajawal-Medium',
+    color: 'green',
   },
   iconStyle: {
     width: 20,
