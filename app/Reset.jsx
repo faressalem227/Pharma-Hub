@@ -14,10 +14,13 @@ const Reset = () => {
     Otp: '',
   });
 
-  const [token, setToken] = useState('');
-
   const [content, setContent] = useState('mail');
   const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState('');
+  const [password, setPassword] = useState({
+    newPassword: '',
+    confirmNewPassword: '',
+  });
 
   const router = useRouter();
 
@@ -33,6 +36,7 @@ const Reset = () => {
     }
 
     try {
+      setIsLoading(true);
       const response = await api.post('auth/forgot-password-mobile', { Email: form.email });
 
       if (response.data.success) {
@@ -56,24 +60,101 @@ const Reset = () => {
 
   const handleVerifyOtp = async () => {
     try {
-      const response = await api.post('auth/Verify-otp', form);
+      setIsLoading(true);
+      const response = await api.post('auth/Verify-otp', {
+        Email: form.email,
+        Otp: form.Otp,
+      });
 
-      console.log('verfiy response', response);
+      console.log('verfiy response', response.data);
+
+      Toast.show({
+        type: 'success',
+        text1: response.data.message,
+        autoHide: true,
+        visibilityTime: 2000,
+        text1Style: {
+          textAlign: 'left',
+        },
+      });
+      setToken(response.data.resetToken);
+      setContent('password');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    const passwordArr = Object.entries(password);
+
+    for (let index = 0; index < passwordArr.length; index++) {
+      const { key, value } = passwordArr[index];
+
+      if (value === '' || value === null) {
+        Toast.show({
+          type: 'error',
+          text1: `Please fill the ${key} field`,
+          autoHide: true,
+          visibilityTime: 2000,
+          text1Style: {
+            textAlign: 'left',
+          },
+        });
+
+        return;
+      }
+    }
+
+    if (password.newPassword !== password.confirmNewPassword) {
+      Toast.show({
+        type: 'error',
+        text1: "Passwords doesn't match",
+        autoHide: true,
+        visibilityTime: 2000,
+        text1Style: {
+          textAlign: 'left',
+        },
+      });
+
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await api.post('auth/reset-password', {
+        newPassword: password.newPassword,
+        token,
+      });
 
       if (response.data.success) {
-        setContent('password');
+        Toast.show({
+          type: 'success',
+          text1: response.data.message,
+          autoHide: true,
+          visibilityTime: 2000,
+        });
+
+        setTimeout(() => {}, 2000);
+
+        router.replace('/Signin');
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  console.log(token);
 
   return (
     <View className="flex-1 bg-white p-4">
       <View className="flex-row items-center justify-between">
         <TouchableOpacity
           onPress={() => {
-            if (content === 'Otp') {
+            if (content === 'Otp' || content === 'password') {
               setContent('mail');
             } else {
               router.back();
@@ -108,6 +189,7 @@ const Reset = () => {
                 forgot your password don't worry write your mail to receive a verification code!
               </Text>
             </View>
+
             <FormField
               inputStyle="p-4"
               title="E-Mail"
@@ -146,6 +228,44 @@ const Reset = () => {
           }
           onSubmit={handleVerifyOtp}
         />
+      )}
+
+      {content === 'password' && (
+        <View className="mt-4">
+          <Text className="mb-12 text-center font-tbold text-4xl text-secndryText">
+            Create new password
+          </Text>
+
+          <View className="gap-3">
+            <FormField
+              placeholder="New password"
+              value={password.newPassword || ''}
+              handleChangeText={(val) =>
+                setPassword((prev) => ({
+                  ...prev,
+                  newPassword: val,
+                }))
+              }
+            />
+            <FormField
+              placeholder="Confirm new password"
+              value={password.confirmNewPassword || ''}
+              handleChangeText={(val) =>
+                setPassword((prev) => ({
+                  ...prev,
+                  confirmNewPassword: val,
+                }))
+              }
+            />
+          </View>
+
+          <MainButton
+            title="Create"
+            isLoading={isLoading}
+            handlePress={handleResetPassword}
+            containerStyles="mt-5"
+          />
+        </View>
       )}
 
       <Toast />

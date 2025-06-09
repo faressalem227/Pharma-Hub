@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Slot } from 'expo-router';
 import { useEffect } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -36,16 +36,7 @@ const RootStack = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff', paddingTop: insets.top }}>
       <GlobalProvider>
         <StatusBar backgroundColor="white" barStyle="dark-content" />
-
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="Signin" options={{ headerShown: false }} />
-          <Stack.Screen name="Signup" options={{ headerShown: false }} />
-          <Stack.Screen name="Reset" options={{ headerShown: false }} />
-          <Stack.Screen name="(pages)" options={{ headerShown: false }} />
-          <Stack.Screen name="(Chat)" options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <Slot />
       </GlobalProvider>
     </SafeAreaView>
   );

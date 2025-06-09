@@ -54,16 +54,14 @@ const Signin = () => {
         Toast.show({
           type: 'success',
           text1: 'Sign in successed',
-          text2: 'تم تسجيل الدخول بنجاح',
           autoHide: true,
           visibilityTime: 2000,
           text1Style: {
             textAlign: 'left',
           },
-          text2Style: {
-            textAlign: 'right',
-          },
         });
+
+        setTimeout(() => {}, 2000);
 
         router.replace('/');
       }
@@ -72,15 +70,11 @@ const Signin = () => {
       Toast.show({
         type: 'error',
         text1: 'Sign in failed',
-        text2: error?.response.data.message,
         autoHide: true,
         visibilityTime: 2000,
-        // text1Style: {
-        //   textAlign: 'left',
-        // },
-        // text2Style: {
-        //   textAlign: 'left',
-        // },
+        text1Style: {
+          textAlign: 'left',
+        },
       });
     } finally {
       setSubmitting(false);

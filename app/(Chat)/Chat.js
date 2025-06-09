@@ -1,14 +1,15 @@
-import { View, Text, Touchable, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
-import { useGlobalContext } from '../../context/GlobalProvider';
-import api from '../../utilities/api';
-import { useEffect, useState } from 'react';
-import Svg, { Path } from 'react-native-svg';
+/* eslint-disable prettier/prettier */
 import { Image } from 'expo-image';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { View, Text, Touchable, TouchableOpacity } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+
 import { socket } from './_layout';
 import ChatScreen from '../../components/UI/Chat/ChatScreen';
 import { icons } from '../../constants';
+import { useGlobalContext } from '../../context/GlobalProvider';
+import api from '../../utilities/api';
 export default function Chat() {
   const { ChatID, UserPhoto, ChatTitle, ReceiverID } = useLocalSearchParams();
   const [messages, setMessages] = useState([]);
@@ -26,12 +27,13 @@ export default function Chat() {
       console.error('Error fetching messages:', error);
     }
   };
+
   console.log(ReceiverID);
 
   const sendMessage = async (message) => {
     socket.emit(
       'sendMessage',
-      { senderID: UserID, receiverID: ReceiverID, message: message, ChatID: ChatID },
+      { senderID: UserID, receiverID: ReceiverID, message, ChatID },
       (response) => {
         if (!ChatID) {
           ChatID = response.ChatID;
@@ -41,6 +43,7 @@ export default function Chat() {
       }
     );
   };
+
   useEffect(() => {
     socket.emit('joinChatRoom', { ChatID }, (response) => {
       console.log('Joined chat:', response);
@@ -116,7 +119,7 @@ export default function Chat() {
         </View>
       </View>
 
-      <ChatScreen messages={messages} UserID={UserID} onSendMessage={sendMessage}></ChatScreen>
+      <ChatScreen messages={messages} UserID={UserID} onSendMessage={sendMessage} />
     </View>
   );
 }

@@ -5,12 +5,11 @@ import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { icons } from '../../constants';
 
 const FormField = ({
-  haveTitle = true,
   title,
   value,
   handlePress,
   placeholder,
-  handleChangeText,
+  handleChangeText = () => {},
   inputName,
   otherStyles,
   icon,
@@ -34,12 +33,13 @@ const FormField = ({
   };
   return (
     <View className={` ${otherStyles}`}>
-      {haveTitle && (
-        <View className="mb-4 flex-row items-center gap-2">
-          {icon ? <Image source={icon} resizeMode="contain" className="ml-1 h-6 w-6" /> : ''}
-          <Text className=" text-right font-tmedium text-lg text-secndryText">{title}</Text>
+      {title && (
+        <View className="mb-2 flex-row items-center gap-1">
+          {icon ? <Image source={icon} resizeMode="contain" className="h-6 w-6" /> : ''}
+          <Text className="pt-2 font-tmedium text-lg text-secndryText">{title}</Text>
         </View>
       )}
+
       <View className="flex h-14 w-full flex-row items-center rounded-lg border border-secndryText px-4">
         {title === 'Password' && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -59,6 +59,7 @@ const FormField = ({
             <Image source={inputIcon} className="h-6 w-6" resizeMode="contain" />
           </TouchableOpacity>
         )}
+
         {inputIconUser && (
           <TouchableOpacity
             className="items-center justify-center rounded-md "
@@ -67,11 +68,12 @@ const FormField = ({
             <Image source={inputIconUser} className="h-6 w-6" resizeMode="contain" />
           </TouchableOpacity>
         )}
+
         <TextInput
           autoCapitalize="none"
           editable={!!editable}
           multiline={title !== 'كلمة المرور'}
-          className={`flex-1 font-tregular text-base leading-5 text-dark ${inputStyle ? inputStyle : ''} `}
+          className={`flex-1 font-tregular text-base leading-5 text-secndryText ${inputStyle ? inputStyle : ''} `}
           value={value}
           keyboardType={numeric ? 'numeric' : ''}
           placeholder={placeholder}
