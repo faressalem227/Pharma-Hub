@@ -3,7 +3,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 
-import Loader from '../UI/Loader';
 import MainButton from '../UI/MainButton';
 
 const OtpLayout = ({ onChange = () => {}, onSubmit = () => {}, isLoading, email }) => {

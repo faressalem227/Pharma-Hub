@@ -308,7 +308,12 @@ function Signup() {
 
       {showOtp && (
         <OtpLayout
-          onChange={setForm}
+          onChange={(val) =>
+            setForm((prev) => ({
+              ...prev,
+              Otp: val,
+            }))
+          }
           onSubmit={handleSubmitForm}
           isLoading={isLoading}
           email={form.Email}

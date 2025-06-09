@@ -54,6 +54,7 @@ const AllergiesScreen = () => {
       });
 
       setCounter((prev) => prev + 1);
+      setSelectedValue(null);
     } catch (error) {
       console.error(error);
     }
@@ -87,7 +88,9 @@ const AllergiesScreen = () => {
               />
             </View>
 
-            <TouchableOpacity className="w-1/4 rounded-md bg-mainText px-2 py-5">
+            <TouchableOpacity
+              className="w-1/4 rounded-md bg-mainText px-2 py-5"
+              onPress={handleAddAlergy}>
               <Text className="text-center text-white">Add</Text>
             </TouchableOpacity>
           </View>
