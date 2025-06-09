@@ -15,7 +15,15 @@ const HeaderBar = () => {
         <View className="flex-row items-center gap-5">
           <View className="h-6 w-6 rounded-full bg-white">
             {(!isLogged || !user?.userImage) && (
-              <TouchableOpacity onPress={() => router.navigate('/Signin')}>
+              <TouchableOpacity
+                id="userIcon"
+                onPress={() => {
+                  if (isLogged) {
+                    router.navigate('/ProfileScreen');
+                  } else {
+                    router.navigate('/Signin');
+                  }
+                }}>
                 <Svg
                   width="24"
                   height="24"
@@ -38,10 +46,16 @@ const HeaderBar = () => {
                 </Svg>
               </TouchableOpacity>
             )}
+
             {isLogged && user?.userImage && (
-              <Image source={user?.userImage} className="object-contain" />
+              <TouchableOpacity
+                className="h-6 w-6 rounded-full"
+                onPress={() => router.navigate('/ProfileScreen')}>
+                <Image source={user?.userImage} className="object-contain" />
+              </TouchableOpacity>
             )}
           </View>
+
           <Text className="text-2xl font-bold text-secndryText">
             {isLogged ? user?.username : 'Guest'}
           </Text>
@@ -51,8 +65,8 @@ const HeaderBar = () => {
           <TouchableOpacity
             className="pt-4"
             onPress={() => {
-              router.navigate('/Signin');
-              // router.navigate('/NotificationScreen')
+              // router.navigate('/Signin');
+              router.navigate('/NotificationScreen');
             }}>
             <Svg
               width="32"

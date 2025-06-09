@@ -19,7 +19,7 @@ export default function MoreScreen() {
       <ScrollView className="flex gap-3">
         {items.map((item, index) => (
           <TouchableOpacity
-            className={` py-4 ${index !== items.length - 1 ? 'border-b border-b-borderGray' : ''}`}
+            className={`py-4 ${index !== items.length - 1 ? 'border-b border-b-borderGray' : ''}`}
             key={index}
             onPress={() => router.push(item.path)}>
             <Text className="font-tregular text-lg text-secndryText">{item.label}</Text>

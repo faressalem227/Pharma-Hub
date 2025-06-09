@@ -1,20 +1,23 @@
 /* eslint-disable prettier/prettier */
-import { View, Text, TouchableOpacity } from 'react-native';
-import api from '../../utilities/api';
-import { useState, useEffect } from 'react';
-import { socket } from './_layout';
-import ChatList from '../../components/UI/Chat/ChatList';
-import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+import { socket } from './_layout';
+import { BottomBar } from '../../components';
+import ChatList from '../../components/UI/Chat/ChatList';
 import { icons } from '../../constants';
 import { useGlobalContext } from '../../context/GlobalProvider';
-import { BottomBar } from '../../components';
+import api from '../../utilities/api';
+
 function ChatScreen() {
   const [chatData, setChatData] = useState([]);
   const router = useRouter();
   const {
     user: { id },
   } = useGlobalContext();
+
   const getChatData = async () => {
     try {
       // Simulate fetching chat data
