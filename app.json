@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "PharmaHub",
-    "slug": "Pharma",
-    "version": "1.0.0",
+    "name": "pharmahub",
+    "slug": "pharma",
+    "version": "1.0.1",
     "icon": "./assets/images/pharmaLogo.png",
     "scheme": "pharma",
     "web": {
@@ -36,6 +36,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyD2ocIaSbrcep_fThJSREmAQVqmiO_NxGk"
+        }
       },
       "package": "com.amrkhaled222.Pharma"
     }

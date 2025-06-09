@@ -2,14 +2,10 @@
 import { Slot, useRouter } from 'expo-router';
 import { use, useEffect } from 'react';
 import { Touchable, TouchableOpacity, View } from 'react-native';
-
-// import { BottomBar } from '../../components';
+import { API_BASE_URL } from '../../utilities/api';
 import { io } from 'socket.io-client';
-
 import { useGlobalContext } from '../../context/GlobalProvider';
-import { Image } from 'expo-image';
-import { icons } from '../../constants';
-export const socket = io('http://192.168.1.44:8080', {
+export const socket = io(API_BASE_URL?.split('/api')?.[0], {
   transports: ['websocket'],
   autoConnect: true,
 });

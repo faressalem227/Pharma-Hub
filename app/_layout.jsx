@@ -10,13 +10,10 @@ import '../global.css';
 // import '@react-native-firebase/app';
 // import messaging from '@react-native-firebase/messaging';
 // import notifee, { AndroidImportance } from '@notifee/react-native';
-
 SplashScreen.preventAutoHideAsync();
-
 // Register background message handler outside of component
 // messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 //   console.log('Message handled in the background!', remoteMessage);
-
 //   // You can store navigation data in AsyncStorage or similar
 //   // to handle it when the app becomes active
 // });
