@@ -40,19 +40,17 @@ const Reset = () => {
       const response = await api.post('auth/forgot-password-mobile', { Email: form.email });
 
       if (response.data.success) {
-        Toast.show({
-          type: 'success',
-          text1: response.data.message,
-          autoHide: true,
-          visibilityTime: 2000,
-        });
-
-        setTimeout(() => {}, 2000);
-
         setContent('Otp');
       }
     } catch (error) {
       console.error(error);
+
+      Toast.show({
+        type: 'error',
+        text1: 'mail not found',
+        autoHide: true,
+        visibilityTime: 2000,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -61,6 +59,7 @@ const Reset = () => {
   const handleVerifyOtp = async () => {
     try {
       setIsLoading(true);
+
       const response = await api.post('auth/Verify-otp', {
         Email: form.email,
         Otp: form.Otp,
@@ -147,7 +146,7 @@ const Reset = () => {
     }
   };
 
-  console.log(token);
+  console.log('otp', form.Otp);
 
   return (
     <View className="flex-1 bg-white p-4">

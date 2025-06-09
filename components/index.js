@@ -19,6 +19,7 @@ import ErrorMassege from './layout/ErrorMassege';
 import HeaderBar from './layout/HeaderBar';
 import LogoBar from './layout/LogoBar';
 import MainLayout from './layout/MainLayout';
+import Navback from './layout/Navback';
 import OtpLayout from './layout/OtpLayout';
 import UserInfo from './layout/UserInfo';
 import Header from './layout/header';
@@ -51,4 +52,5 @@ export {
   HeaderBar,
   BottomBar,
   OtpLayout,
+  Navback,
 };

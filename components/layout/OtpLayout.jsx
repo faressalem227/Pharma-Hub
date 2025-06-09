@@ -4,6 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 
 import Loader from '../UI/Loader';
+import MainButton from '../UI/MainButton';
 
 const OtpLayout = ({ onChange = () => {}, onSubmit = () => {}, isLoading, email }) => {
   return (
@@ -21,13 +22,7 @@ const OtpLayout = ({ onChange = () => {}, onSubmit = () => {}, isLoading, email 
         type="numeric"
         secureTextEntry={false}
         focusStickBlinkingDuration={500}
-        onTextChange={(val) =>
-          onChange((prev) => ({
-            ...prev,
-            Otp: val,
-          }))
-        }
-        onFilled={() => onSubmit()}
+        onTextChange={(val) => onChange(val)}
         textInputProps={{
           accessibilityLabel: 'One-Time Password',
         }}
@@ -42,7 +37,9 @@ const OtpLayout = ({ onChange = () => {}, onSubmit = () => {}, isLoading, email 
         }}
       />
 
-      <Loader isLoading={isLoading} />
+      <View className="mt-4">
+        <MainButton title="Confirm" isLoading={isLoading} handlePress={onSubmit} />
+      </View>
     </View>
   );
 };

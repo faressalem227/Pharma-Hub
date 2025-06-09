@@ -25,7 +25,7 @@ const FormField = ({
   iconStyle,
   ...props
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
 
   const handleDecimalInput = (text, setValue) => {
     const validatedText = text.replace(/[^0-9.]/g, ''); // Allow only numbers and decimal points
@@ -42,9 +42,9 @@ const FormField = ({
 
       <View className="flex h-14 w-full flex-row items-center rounded-lg border border-secndryText px-4">
         {title === 'Password' && (
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <TouchableOpacity onPress={() => setHidePassword((prev) => !prev)}>
             <Image
-              source={showPassword ? icons.eyeIcon : icons.eyeSlash}
+              source={hidePassword ? icons.eyeSlash : icons.eyeIcon}
               className="h-6 w-6"
               resizeMode="contain"
             />
@@ -72,7 +72,7 @@ const FormField = ({
         <TextInput
           autoCapitalize="none"
           editable={!!editable}
-          multiline={title !== 'كلمة المرور'}
+          multiline={title !== 'Password'}
           className={`flex-1 font-tregular text-base leading-5 text-secndryText ${inputStyle ? inputStyle : ''} `}
           value={value}
           keyboardType={numeric ? 'numeric' : ''}
@@ -82,7 +82,7 @@ const FormField = ({
             if (numeric) handleDecimalInput(e, handleChangeText);
             else handleChangeText(e, inputName);
           }}
-          secureTextEntry={!showPassword}
+          secureTextEntry={hidePassword}
         />
       </View>
     </View>
