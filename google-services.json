@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "792728285345",
+    "project_id": "pharma-hub-c7d54",
+    "storage_bucket": "pharma-hub-c7d54.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792728285345:android:34f80d037bf5ead17e00e0",
+        "android_client_info": {
+          "package_name": "com.amrkhaled222.Pharma"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk9MWcEXRHNyLyC-grDBVUlxmx_NyOR84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -83,15 +83,12 @@ const GlobalProvider = ({ children }) => {
       const response = await api.post(`auth/signin`, {
         email,
         password,
+        FcmToken: fcmToken || null,
       });
-
-      // console.log('62 response', response.data);
 
       const { accessToken, refreshToken, user } = response.data;
       console.log(response.data);
       await saveTokens(accessToken, refreshToken, user);
-
-      // console.log('objext', accessToken, refreshToken, user);
 
       setUser({
         username: user?.Username,

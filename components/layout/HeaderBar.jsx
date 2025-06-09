@@ -79,7 +79,9 @@ const HeaderBar = () => {
             </Svg>
           </TouchableOpacity>
 
-          <TouchableOpacity className="pt-1" onPress={() => router.navigate('/ChatList')}>
+          <TouchableOpacity
+            className="pt-1"
+            onPress={() => router.navigate(user?.id ? '/ChatList' : '/Signin')}>
             <Svg
               width="30"
               height="30"

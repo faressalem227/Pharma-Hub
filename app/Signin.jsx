@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, I18nManager, TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Toast from 'react-native-toast-message';
-
+// import '@react-native-firebase/app';
+// import messaging from '@react-native-firebase/messaging';
 import { MainButton, FormField, LogoBar, Loader } from '../components';
 import { icons } from '../constants';
 import { useGlobalContext } from '../context/GlobalProvider';
-
 const Signin = () => {
   const { isLogged, user, loading, checkAuth, login } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
@@ -22,9 +22,21 @@ const Signin = () => {
     password: '',
   });
   const router = useRouter();
+  // const requestPermission = async () => {
+  //   const authStatus = await messaging().requestPermission();
+  //   const enabled =
+  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  // console.log(form);
-
+  //   if (enabled) {
+  //     console.log('Authorization status:', authStatus);
+  //   }
+  // };
+  // const getFcmToken = async () => {
+  //   const token = await messaging().getToken();
+  //   console.log('FCM Token:', token);
+  //   return token;
+  // };
   const submit = async () => {
     if (form.email === '' || form.password === '') {
       Toast.show({
@@ -42,14 +54,14 @@ const Signin = () => {
       });
       return;
     }
-
     try {
       setSubmitting(true);
-
-      const response = await login(form.email, form.password); //fcmToken
-
-      console.log('response', response);
-
+      // const permission = await requestPermission(); // Uncomment if you want to request permission first
+      let fcmToken = null;
+      // if (permission) {
+      //   fcmToken = await getFcmToken();
+      // }
+      const response = await login(form.email, form.password, fcmToken); //fcmToken
       if (response) {
         Toast.show({
           type: 'success',
@@ -68,25 +80,17 @@ const Signin = () => {
         router.replace('/');
       }
     } catch (error) {
-      //console.log("error", error);
       Toast.show({
         type: 'error',
         text1: 'Sign in failed',
         text2: error?.response.data.message,
         autoHide: true,
         visibilityTime: 2000,
-        // text1Style: {
-        //   textAlign: 'left',
-        // },
-        // text2Style: {
-        //   textAlign: 'left',
-        // },
       });
     } finally {
       setSubmitting(false);
     }
   };
-
   return (
     <ScrollView className="bg-white p-4">
       {loading ? (
@@ -110,10 +114,8 @@ const Signin = () => {
                 />
               </Svg>
             </TouchableOpacity>
-
             <LogoBar />
           </View>
-
           <View className="h-full flex-1">
             <Text className="mb-10 text-center font-tbold text-4xl text-secndryText">Sign In</Text>
             <FormField
@@ -128,7 +130,6 @@ const Signin = () => {
               inputIconUser={form.UserName && icons.deleteIcon}
               handlePress={() => setForm({ ...form, UserName: '', password: '' })}
             />
-
             <FormField
               inputStyle="p-4"
               title="Password"
@@ -138,11 +139,9 @@ const Signin = () => {
               icon={icons.lock}
               placeholder="Enter your password"
             />
-
             <TouchableOpacity onPress={() => router.navigate('/Reset')}>
               <Text className="mt-4 text-center text-secndryText">forgot your password?</Text>
             </TouchableOpacity>
-
             <MainButton
               title="Sign In"
               handlePress={submit}
@@ -150,7 +149,6 @@ const Signin = () => {
               isLoading={isSubmitting}
               icon={icons.Signin}
             />
-
             <MainButton
               title="Sign up"
               handlePress={() => {
@@ -160,7 +158,6 @@ const Signin = () => {
               isLoading={isSubmitting}
               icon={icons.Signin}
             />
-
             <MainButton
               title="FOR BEST DEV EXPERIENCE"
               handlePress={() =>
@@ -177,21 +174,4 @@ const Signin = () => {
     </ScrollView>
   );
 };
-
 export default Signin;
-
-// Request FCM permission and get token
-// const authStatus = await messaging().requestPermission();
-// const enabled =
-// 	authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-// 	authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-// let fcmToken = null;
-// if (enabled) {
-// 	fcmToken = await messaging().getToken();
-// }
-
-// // Proceed with login regardless of FCM token status
-
-// import "@react-native-firebase/app";
-// import messaging from "@react-native-firebase/messaging";

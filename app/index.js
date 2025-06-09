@@ -1,16 +1,12 @@
-/* eslint-disable prettier/prettier */
-// app/index.js
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-
 import { HeaderBar, BottomBar } from '../components';
 import api from '../utilities/api';
 import { Platform } from 'react-native';
+import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useGlobalContext } from '../context/GlobalProvider';
-
 const { width } = Dimensions.get('window');
-
 export default function HomeScreen() {
   const [data, setData] = useState([]);
   const { login } = useGlobalContext();
@@ -38,9 +34,9 @@ export default function HomeScreen() {
     <>
       <HeaderBar />
       <View className="flex-1">
-        {/* Map */}
         <View>
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={styles.map}
             initialRegion={{
               latitude: 30.0444,

@@ -54,7 +54,18 @@ const ChatList = ({ chats, onChatPress }) => {
         <View style={styles.chatHeader}>
           <Text style={styles.userName}>{item.ChatTitle}</Text>
           <Text style={styles.timestamp}>
-            {new Date(item.LastMessageDate)?.toLocaleTimeString()}
+            {new Date(item.LastMessageDate)
+              ?.toLocaleTimeString({
+                hour12: true,
+                region: 'en-US',
+              })
+              .slice(0, 4) +
+              new Date(item.LastMessageDate)
+                ?.toLocaleTimeString({
+                  hour12: true,
+                  region: 'en-US',
+                })
+                .slice(7)}
           </Text>
         </View>
         <Text style={styles.lastMessage} numberOfLines={1}>

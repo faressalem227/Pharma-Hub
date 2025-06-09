@@ -42,7 +42,21 @@ export default function ChatScreen({ messages, onSendMessage, UserID }) {
             {/* <Text style={styles.sender}>{msg.SenderName}</Text> */}
             <Text style={styles.text}>{msg.Message}</Text>
             <View style={styles.metadata}>
-              <Text style={styles.timestamp}>{new Date(msg.TimeStamp)?.toLocaleTimeString()}</Text>
+              <Text style={styles.timestamp}>
+                {' '}
+                {new Date(msg.TimeStamp)
+                  ?.toLocaleTimeString({
+                    hour12: true,
+                    region: 'en-US',
+                  })
+                  .slice(0, 4) +
+                  new Date(msg.TimeStamp)
+                    ?.toLocaleTimeString({
+                      hour12: true,
+                      region: 'en-US',
+                    })
+                    .slice(7)}
+              </Text>
               {msg.Sender === UserID && (
                 <Text style={styles.readStatus}>{msg.IsRead ? '✓✓' : '✓'}</Text>
               )}

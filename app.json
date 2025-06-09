@@ -4,7 +4,7 @@
     "slug": "Pharma",
     "version": "1.0.0",
     "icon": "./assets/images/pharmaLogo.png",
-    "scheme": "Pahrma",
+    "scheme": "pharma",
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
@@ -15,8 +15,11 @@
     },
     "plugins": [
       "expo-router",
-      "expo-maps"
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
+      "expo-font"
     ],
+
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
@@ -24,21 +27,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["assets/*", "!assets/splash.png"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "config": {
-        "googleMaps": {
-          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
-        }
       },
       "package": "com.amrkhaled222.Pharma"
     }
