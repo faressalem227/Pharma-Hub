@@ -93,7 +93,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity
             className="flex-row items-center justify-between pb-3"
-            onPress={() => router.navigate('/SavedPahrmaciesScreen')}>
+            onPress={() => router.navigate('/SavedMedicines')}>
             <View className="flex-row items-center gap-2">
               <Svg width="18" height="16" viewBox="0 0 18 16" fill="none">
                 <Path d="M18 16H0V0H18V16Z" />

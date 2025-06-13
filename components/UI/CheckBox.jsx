@@ -1,19 +1,21 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import dot from '../../assets/images/dot.png';
+
 import True from '../../assets/images/True.png';
+import dot from '../../assets/images/dot.png';
 function Checkbox({
   keyName,
   labelName,
   title,
   value = false,
   onChange,
-  direction = "ltr",
+  direction = 'ltr',
   isEditable = false,
-  checkboxSize = "medium",
-  checkboxColor = "#227099",
-  uncheckedIcon = "",
-  checkboxShape = "square",
+  checkboxSize = 'medium',
+  checkboxColor = '#227099',
+  uncheckedIcon = '',
+  checkboxShape = 'square',
 }) {
   const [isChecked, setIsChecked] = useState(value);
 
@@ -52,7 +54,7 @@ function Checkbox({
   };
 
   const checkedIconShape = () => {
-    return checkboxShape === "circle" ? (
+    return checkboxShape === 'circle' ? (
       <Image source={dot} style={{ width: '50%', height: '50%' }} />
     ) : (
       <Image source={True} style={{ width: '50%', height: '50%' }} />
@@ -61,16 +63,11 @@ function Checkbox({
 
   return (
     <View
-    className="outline-none border-[#1C5B7D]"
-      style={[
-        styles.container,
-        
-        direction === "rtl" && { flexDirection: 'row-reverse' },
-      ]}
-      title={title}
-    >
+      className="border-[#1C5B7D] outline-none"
+      style={[styles.container, direction === 'rtl' && { flexDirection: 'row-reverse' }]}
+      title={title}>
       <TouchableOpacity
-      className="outline-none"
+        className="outline-none"
         style={[
           styles.checkboxContainer,
           getCheckboxSize(),
@@ -78,39 +75,29 @@ function Checkbox({
           { borderColor: checkboxColor },
         ]}
         onPress={handleCheckboxChange}
-        disabled={!isEditable}
-      >
+        disabled={!isEditable}>
         {isChecked ? (
-          <View className="outline-none border-[#1C5B7D]"
+          <View
+            className="border-[#1C5B7D] outline-none"
             style={[
               styles.checkboxChecked,
               getCheckboxSize(),
               getCheckboxShape(),
               { backgroundColor: checkboxColor },
-            ]}
-          >
+            ]}>
             {checkedIconShape()}
           </View>
         ) : (
           <View
-          className="outline-none border-[#1C5B7D]"
-            style={[
-              styles.checkboxUnchecked,
-              getCheckboxSize(),
-              getCheckboxShape(),
-            ]}
-          >
+            className="border-[#1C5B7D] outline-none"
+            style={[styles.checkboxUnchecked, getCheckboxSize(), getCheckboxShape()]}>
             {uncheckedIcon}
           </View>
         )}
       </TouchableOpacity>
       <Text
-        style={[
-          styles.label,
-          { pointerEvents: isEditable ? 'auto' : 'none' },
-        ]}
-        className="text-base font-tmedium font-medium "
-      >
+        style={[styles.label, { pointerEvents: isEditable ? 'auto' : 'none' }]}
+        className="font-tmedium text-base font-medium ">
         {labelName}
       </Text>
     </View>
@@ -129,7 +116,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     cursor: 'pointer',
     position: 'relative',
-    
   },
   checkboxChecked: {
     justifyContent: 'center',
@@ -141,7 +127,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    borderWidth:.5,
+    borderWidth: 0.5,
   },
   label: {
     color: '#333',

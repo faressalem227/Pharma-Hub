@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, I18nManager, TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Toast from 'react-native-toast-message';
+
 // import '@react-native-firebase/app';
 // import messaging from '@react-native-firebase/messaging';
 import { MainButton, FormField, LogoBar, Loader } from '../components';
@@ -50,7 +51,7 @@ const Signin = () => {
     if (form.email === '' || form.password === '') {
       Toast.show({
         type: 'error',
-        text1: 'Sign in Failed',
+        text1: 'Please fill the inputs',
         text2: 'من فضلك ادخل البيانات المطلوبه',
         autoHide: true,
         visibilityTime: 3000,
@@ -65,7 +66,8 @@ const Signin = () => {
     }
     try {
       setSubmitting(true);
-      const fcmToken = await getFcmToken();
+      const fcmToken = null;
+      // await getFcmToken();
       const response = await login(form.email, form.password, fcmToken); //fcmToken
       if (response) {
         Toast.show({
@@ -81,6 +83,8 @@ const Signin = () => {
         router.replace('/');
       }
     } catch (error) {
+      console.error(error);
+
       Toast.show({
         type: 'error',
         text1: 'Sign in failed',
