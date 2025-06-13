@@ -12,6 +12,7 @@ const GlobalContext = createContext({
   setIsLogged: () => {},
   setLoading: () => {},
   user: {
+    gender: 0,
     username: '',
     email: '',
     userImage: '',
@@ -38,10 +39,12 @@ const GlobalProvider = ({ children }) => {
       const username = JSON.parse(await SecureStore.getItemAsync('username')) || '';
       const email = JSON.parse(await SecureStore.getItemAsync('email')) || '';
       const userImage = JSON.parse(await SecureStore.getItemAsync('userImage')) || '';
+      const gender = JSON.parse(await SecureStore.getItemAsync('gender')) || '';
       const id = JSON.parse(await SecureStore.getItemAsync('id')) || 0;
       if (username) {
         setIsLogged(true);
         setUser({
+          gender,
           username,
           email,
           userImage,
@@ -67,7 +70,8 @@ const GlobalProvider = ({ children }) => {
       await SecureStore.setItemAsync('accessToken', JSON.stringify(accessToken));
       await SecureStore.setItemAsync('username', JSON.stringify(user.Username));
       await SecureStore.setItemAsync('email', JSON.stringify(user.email));
-      await SecureStore.setItemAsync('userImage', JSON.stringify(user.userImage || ''));
+      await SecureStore.setItemAsync('userImage', JSON.stringify(user.UserImage || ''));
+      await SecureStore.setItemAsync('gender', JSON.stringify(user.Gender || ''));
       await SecureStore.setItemAsync('id', JSON.stringify(user.id));
     } catch (error) {
       console.error(error);
@@ -91,6 +95,7 @@ const GlobalProvider = ({ children }) => {
       await saveTokens(accessToken, refreshToken, user);
 
       setUser({
+        gender: user?.Gender,
         username: user?.Username,
         email: user?.email,
         userImage: user?.UserImage,
