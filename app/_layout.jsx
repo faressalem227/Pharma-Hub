@@ -9,6 +9,7 @@ import GlobalProvider from '../context/GlobalProvider';
 import * as Location from 'expo-location';
 
 import '../global.css';
+import SearchContextProvider from '../context/SearchContext';
 // import '@react-native-firebase/app';
 // import messaging from '@react-native-firebase/messaging';
 // import notifee, { AndroidImportance } from '@notifee/react-native';
@@ -121,8 +122,10 @@ const RootStack = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff', paddingTop: insets.top }}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
       <GlobalProvider>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
-        <Slot />
+        <SearchContextProvider>
+          <StatusBar backgroundColor="white" barStyle="dark-content" />
+          <Slot />
+        </SearchContextProvider>
       </GlobalProvider>
     </SafeAreaView>
   );
