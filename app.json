@@ -14,10 +14,10 @@
       "typedRoutes": true
     },
     "plugins": [
-      "expo-router",
-      "@react-native-firebase/app",
-      "@react-native-firebase/messaging",
-      "expo-font"
+  "expo-router",
+  "./plugins/withReactNativeFirebaseApp",
+  "./plugins/withReactNativeFirebaseMessaging",
+  "expo-font"
     ],
 
     "orientation": "portrait",
