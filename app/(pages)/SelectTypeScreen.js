@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-export default function AddMedicineScreen() {
-  const [medicineName, setMedicineName] = useState("");
+const types = [
+  "Pill",
+  "Solution",
+  "Injection",
+  "Powder",
+  "Drops",
+  "Inhaler",
+  "Other",
+];
+
+export default function SelectTypeScreen() {
+  const [selected, setSelected] = useState("Pill");
   const router = useRouter();
 
   return (
@@ -25,19 +28,23 @@ export default function AddMedicineScreen() {
         </Text>
       </View>
       <View style={styles.divider} />
-      <Text style={styles.title}>What medicine do you want to add?</Text>
+      <Text style={styles.title}>What kind of medicine is it?</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Enter medicine name"
-        placeholderTextColor="#aaa"
-        value={medicineName}
-        onChangeText={setMedicineName}
-      />
-
+      {types.map((type) => (
+        <TouchableOpacity
+          key={type}
+          style={styles.option}
+          onPress={() => setSelected(type)}
+        >
+          <View style={styles.radioCircle}>
+            {selected === type && <View style={styles.selectedRb} />}
+          </View>
+          <Text style={styles.optionText}>{type}</Text>
+        </TouchableOpacity>
+      ))}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push("/SelectTypeScreen")}
+        onPress={() => router.push("/HowOftenScreen")}
       >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
@@ -79,20 +86,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     textAlign: "center",
-    marginVertical: 30,
+    marginBottom: 30,
     color: "#333",
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 20,
-    padding: 12,
-    paddingHorizontal: 20,
-    fontSize: 16,
-    marginBottom: 30,
-    alignSelf: "center",
-    width: "90%",
-    backgroundColor: "#F2F2F2",
+  option: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    marginLeft: 10,
   },
   divider: {
     height: 3,
@@ -100,18 +101,39 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#3C9D8D",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  selectedRb: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#3C9D8D",
+  },
+  optionText: {
+    fontSize: 16,
+    color: "#333",
+  },
   button: {
     backgroundColor: "#3C9D8D",
     padding: 12,
     borderRadius: 20,
     width: "50%",
     alignSelf: "center",
+    marginTop: 30,
   },
   buttonText: { color: "#fff", textAlign: "center", fontWeight: "600" },
   bottomBar: {
     position: "absolute",
     bottom: 30,
-    width: Dimensions.get("window").width - 40,
+    width: "90%",
     alignSelf: "center",
     flexDirection: "row",
     justifyContent: "space-around",
