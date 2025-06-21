@@ -14,7 +14,7 @@ export default function BottomBar() {
         <Text style={styles.label} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('/categories')}>
+      <TouchableOpacity style={styles.iconWrapper} onPress={() => router.navigate('')}>
         <FontAwesome5 name="pills" size={20} color="#24828D" />
         <Text style={styles.label} />
       </TouchableOpacity>
@@ -26,7 +26,7 @@ export default function BottomBar() {
 
       <TouchableOpacity
         style={styles.iconWrapper}
-        onPress={() => router.navigate('/notifications')}>
+        onPress={() => router.navigate('/')}>
         <Ionicons name="alarm" size={22} color="#24828D" />
         <Text style={styles.label} />
       </TouchableOpacity>
