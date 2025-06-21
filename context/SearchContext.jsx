@@ -12,6 +12,13 @@ export const SearchContext = createContext({
   },
 
   searchData: [],
+  setSearchData: () => {},
+  searchedDrugData: [],
+  setSearchedDrugData: () => {},
+  drugList: [],
+  setDrugList: () => {},
+  handleAdd: () => {},
+  handleRemove: () => {},
   isLoading: false,
   getNearestPharmacy: () => {},
   setLocation: () => {},
@@ -19,11 +26,15 @@ export const SearchContext = createContext({
 
 const SearchContextProvider = ({ children }) => {
   const [searchData, setSearchData] = useState([]);
+  const [drugList, setDrugList] = useState([]);
+  const [searchedDrugData, setSearchedDrugData] = useState([]);
+  const [DrugListIds, setDrugListIds] = useState([]);
   const [location, setLocation] = useState({
     longitude: 0,
     latitude: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialFetch, setInitialFetch] = useState(true);
 
   const getLocation = async () => {
     try {
@@ -44,7 +55,7 @@ const SearchContextProvider = ({ children }) => {
       Alert.alert('Error', 'Failed to get location.');
       console.error(error);
     } finally {
-      setIsLoading(false);
+      if (isInitialFetch) setIsLoading(false);
     }
   };
 
@@ -55,9 +66,9 @@ const SearchContextProvider = ({ children }) => {
     }
 
     try {
-      setIsLoading(true);
+      if (isInitialFetch) setIsLoading(true);
       const req = await api.get(
-        `pharmacy/nearest?Longitude=${location.longitude}&Latitude=${location.latitude}`
+        `pharmacy/nearest?Longitude=${location.longitude}&Latitude=${location.latitude}&DrugID=${DrugListIds.join(';')}&SearchRadiusMeters=1000`
       );
 
       const res = req.data.data;
@@ -69,9 +80,38 @@ const SearchContextProvider = ({ children }) => {
     }
   };
 
+  const addDrug = (id) => {
+    if (!id) return; // prevent adding undefined/null
+
+    setDrugListIds((prev) => {
+      if (prev.includes(id)) return prev; // already exists
+      return [...prev, id]; // add new
+    });
+  };
+
+  const removeDrug = (id) => {
+    if (!id) return;
+
+    setDrugListIds((prev) => prev.filter((drugId) => drugId !== id));
+  };
+
+  const handleAdd = (item) => {
+    setDrugList((prev) => [...prev, item]);
+    addDrug(item.ID);
+  };
+
+  const handleRemove = (item) => {
+    setDrugList((prev) => prev.filter((drug) => drug.ID !== item.ID));
+    removeDrug(item.ID);
+  };
+
   useEffect(() => {
     if (location) {
       getNearestPharmacy();
+    }
+
+    if (isInitialFetch) {
+      setInitialFetch(false);
     }
   }, [location]);
 
@@ -81,7 +121,19 @@ const SearchContextProvider = ({ children }) => {
 
   return (
     <SearchContext.Provider
-      value={{ searchData, isLoading, getNearestPharmacy, setLocation, location }}>
+      value={{
+        drugList,
+        searchData,
+        setSearchData,
+        searchedDrugData,
+        setSearchedDrugData,
+        handleAdd,
+        handleRemove,
+        isLoading,
+        getNearestPharmacy,
+        setLocation,
+        location,
+      }}>
       {children}
     </SearchContext.Provider>
   );

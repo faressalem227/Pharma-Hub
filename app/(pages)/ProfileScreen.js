@@ -1,13 +1,19 @@
 /* eslint-disable prettier/prettier */
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect, useState } from 'react';
 import { View, Text, Image, Switch, TouchableOpacity } from 'react-native';
 import Svg, { Path, G, Defs, ClipPath, Rect } from 'react-native-svg';
 
 import { Navback } from '../../components';
 import { useGlobalContext } from '../../context/GlobalProvider';
+import api from '../../utilities/api';
 
 export default function ProfileScreen() {
-  const { logOut, user } = useGlobalContext();
+  const [image, setImage] = useState(null);
+
+  const { logOut, user, setUser } = useGlobalContext();
 
   const router = useRouter();
 
@@ -21,6 +27,68 @@ export default function ProfileScreen() {
       console.error(error);
     }
   };
+
+  const pickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setImage(result.assets[0].uri); // Store the image URI
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+    }
+  };
+
+  const handleUpdateImage = async () => {
+    if (!image) return;
+
+    const formData = new FormData();
+
+    // Append the image as a file
+    formData.append('file', {
+      image,
+    });
+
+    try {
+      const response = await api.post('auth/image-upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      await SecureStore.setItemAsync('userImage', JSON.stringify(response.data.imageUrl || ''));
+
+      setUser((prev) => ({
+        ...prev,
+        userImage: response.data.imageUrl,
+      }));
+
+      console.log('Upload success:', response.data);
+    } catch (error) {
+      console.error('Upload failed:', error.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access media library is required!');
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (image) {
+      handleUpdateImage();
+    }
+  }, image);
 
   return (
     <View className="flex-1 bg-white p-4">
@@ -50,10 +118,37 @@ export default function ProfileScreen() {
       </View>
 
       <View className="mt-3 items-center">
-        <Image
-          source={require('../../assets/images/default.jpg')}
-          className="mb-2 h-[5.5rem] w-[5.5rem] rounded-full"
-        />
+        <View className="relative">
+          <Image
+            source={
+              user?.userImage ? { uri: user.userImage } : require('../../assets/images/default.jpg')
+            }
+            className="mb-2 h-[5.5rem] w-[5.5rem] rounded-full"
+          />
+          <TouchableOpacity
+            className="absolute -right-1 top-[50] rounded-full bg-mainText p-2"
+            onPress={pickImage}>
+            <Svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <G clipPath="url(#clip0_605_2266)">
+                <Path
+                  d="M4.07695 1.77188L3.79258 2.625H1.75C0.784766 2.625 0 3.40977 0 4.375V11.375C0 12.3402 0.784766 13.125 1.75 13.125H12.25C13.2152 13.125 14 12.3402 14 11.375V4.375C14 3.40977 13.2152 2.625 12.25 2.625H10.2074L9.92305 1.77188C9.74531 1.23594 9.24492 0.875 8.67891 0.875H5.32109C4.75508 0.875 4.25469 1.23594 4.07695 1.77188ZM7 5.25C7.69619 5.25 8.36387 5.52656 8.85616 6.01884C9.34844 6.51113 9.625 7.17881 9.625 7.875C9.625 8.57119 9.34844 9.23887 8.85616 9.73116C8.36387 10.2234 7.69619 10.5 7 10.5C6.30381 10.5 5.63613 10.2234 5.14384 9.73116C4.65156 9.23887 4.375 8.57119 4.375 7.875C4.375 7.17881 4.65156 6.51113 5.14384 6.01884C5.63613 5.52656 6.30381 5.25 7 5.25Z"
+                  fill="white"
+                />
+              </G>
+              <Defs>
+                <ClipPath id="clip0_605_2266">
+                  <Path d="M0 0H14V14H0V0Z" fill="white" />
+                </ClipPath>
+              </Defs>
+            </Svg>
+          </TouchableOpacity>
+        </View>
+
         <Text className="font-tbold text-3xl">{user?.username}</Text>
         <Text className="font-tregular text-infoText">{user?.email}</Text>
       </View>

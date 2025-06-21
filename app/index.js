@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
@@ -10,6 +10,8 @@ export default function HomeScreen() {
   const { isLoading, location, searchData, setLocation } = useContext(SearchContext);
 
   console.log('location', location);
+
+  useEffect(() => {}, [location]);
 
   return (
     <>
