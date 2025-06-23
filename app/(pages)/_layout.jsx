@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Slot } from 'expo-router';
+import { Slot, usePathname } from 'expo-router';
 import { View } from 'react-native';
 
 import { BottomBar } from '../../components';

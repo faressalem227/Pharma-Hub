@@ -1,15 +1,16 @@
 /* eslint-disable prettier/prettier */
-import { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useRouter } from 'expo-router';
+import { useContext, useEffect } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import { HeaderBar, BottomBar, Loader } from '../components';
 import { SearchContext } from '../context/SearchContext';
 
 export default function HomeScreen() {
-  const { isLoading, location, searchData, setLocation } = useContext(SearchContext);
+  const { isLoading, location, searchData, setLocation, setPharmacyID } = useContext(SearchContext);
 
-  console.log('location', location);
+  const router = useRouter();
 
   useEffect(() => {}, [location]);
 
@@ -39,25 +40,26 @@ export default function HomeScreen() {
                 longitude: region.longitude,
               })
             }>
-            {searchData.map((item) => (
-              <Marker
-                key={`${item.ID}_${item.Latitude}_${item.Longitude}`}
-                pinColor="#FF6347"
-                coordinate={{
-                  latitude: item.Latitude,
-                  longitude: item.Longitude,
-                }}
-                title={item.PharmacyName}
-                description={item.description}
-              />
-            ))}
+            {searchData.map((item) => {
+              // console.log(item);
+              return (
+                <Marker
+                  key={`${item.ID}_${item.Latitude}_${item.Longitude}`}
+                  pinColor="#FF6347"
+                  coordinate={{
+                    latitude: item.Latitude,
+                    longitude: item.Longitude,
+                  }}
+                  title={item.PharmacyName}
+                  description={item.PharmacyName}
+                  onPress={() => {
+                    setPharmacyID(item.ID);
+                    router.navigate('/PharmacyDetails');
+                  }}
+                />
+              );
+            })}
           </MapView>
-
-          <TouchableOpacity
-            style={styles.assistantButton}
-            onPress={() => console.log('Chat Assistant opened')}>
-            <Text style={styles.assistantText}>Chat Assistant</Text>
-          </TouchableOpacity>
         </View>
       )}
 

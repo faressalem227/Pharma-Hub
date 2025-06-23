@@ -22,6 +22,8 @@ export const SearchContext = createContext({
   isLoading: false,
   getNearestPharmacy: () => {},
   setLocation: () => {},
+  pharmacyID: 0,
+  setPharmacyID: () => {},
 });
 
 const SearchContextProvider = ({ children }) => {
@@ -35,6 +37,7 @@ const SearchContextProvider = ({ children }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialFetch, setInitialFetch] = useState(true);
+  const [pharmacyID, setPharmacyID] = useState(null);
 
   const getLocation = async () => {
     try {
@@ -133,6 +136,8 @@ const SearchContextProvider = ({ children }) => {
         getNearestPharmacy,
         setLocation,
         location,
+        pharmacyID,
+        setPharmacyID,
       }}>
       {children}
     </SearchContext.Provider>

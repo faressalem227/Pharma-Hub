@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
 
 import { useFonts } from 'expo-font';
+import * as Location from 'expo-location';
 import { router, SplashScreen, Slot } from 'expo-router';
 import { useEffect } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import GlobalProvider from '../context/GlobalProvider';
-import * as Location from 'expo-location';
 
+import GlobalProvider from '../context/GlobalProvider';
 import '../global.css';
 import SearchContextProvider from '../context/SearchContext';
 // import '@react-native-firebase/app';
@@ -24,28 +24,28 @@ SplashScreen.preventAutoHideAsync();
 const RootStack = () => {
   const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        // Request permissions
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          Alert.alert('Permission Denied', 'Location permission is required to use this feature.');
-          setLoading(false);
-          return;
-        }
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       // Request permissions
+  //       const { status } = await Location.requestForegroundPermissionsAsync();
+  //       if (status !== 'granted') {
+  //         Alert.alert('Permission Denied', 'Location permission is required to use this feature.');
+  //         setLoading(false);
+  //         return;
+  //       }
 
-        // Get current location
-        const loc = await Location.getCurrentPositionAsync({});
-        setLocation(loc);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to get location.');
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  //       // Get current location
+  //       const loc = await Location.getCurrentPositionAsync({});
+  //       setLocation(loc);
+  //     } catch (error) {
+  //       Alert.alert('Error', 'Failed to get location.');
+  //       console.error(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   })();
+  // }, []);
 
   // Handle foreground messages
   // useEffect(() => {

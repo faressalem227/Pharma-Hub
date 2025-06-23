@@ -1,15 +1,10 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+/* eslint-disable prettier/prettier */
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 
 export default function SetTimeScreen() {
   const [time, setTime] = useState(new Date());
@@ -27,8 +22,8 @@ export default function SetTimeScreen() {
 
   const formatTime = (date) => {
     let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12 || 12;
     return `${hours}:${minutes} ${ampm}`;
   };
@@ -38,19 +33,19 @@ export default function SetTimeScreen() {
 
     const newReminder = {
       time: formattedTime,
-      name: "Paracetamol",
-      details: "1 Pill   Before Food",
+      name: 'Paracetamol',
+      details: '1 Pill   Before Food',
       days: selectedDays,
     };
 
     try {
-      const existing = await AsyncStorage.getItem("reminders");
+      const existing = await AsyncStorage.getItem('reminders');
       const parsed = existing ? JSON.parse(existing) : [];
       const updated = [...parsed, newReminder];
-      await AsyncStorage.setItem("reminders", JSON.stringify(updated));
-      router.push("/ReminderScreen");
+      await AsyncStorage.setItem('reminders', JSON.stringify(updated));
+      router.push('/ReminderScreen');
     } catch (error) {
-      console.error("Error saving reminder:", error);
+      console.error('Error saving reminder:', error);
     }
   };
 
@@ -68,10 +63,7 @@ export default function SetTimeScreen() {
 
       <Text style={styles.title}>Set Time</Text>
 
-      <TouchableOpacity
-        onPress={() => setShowPicker(true)}
-        style={styles.timeDisplay}
-      >
+      <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.timeDisplay}>
         <Text style={styles.timeText}>{formatTime(time)}</Text>
       </TouchableOpacity>
 
@@ -80,7 +72,7 @@ export default function SetTimeScreen() {
           value={time}
           mode="time"
           is24Hour={false}
-          display={Platform.OS === "ios" ? "spinner" : "clock"}
+          display={Platform.OS === 'ios' ? 'spinner' : 'clock'}
           onChange={onChange}
         />
       )}
@@ -92,11 +84,7 @@ export default function SetTimeScreen() {
       <View style={styles.bottomBar}>
         <Ionicons name="home-outline" size={24} color="#777" />
         <Ionicons name="search-outline" size={24} color="#777" />
-        <Ionicons
-          name="ellipsis-horizontal-circle-outline"
-          size={28}
-          color="#3C9D8D"
-        />
+        <Ionicons name="ellipsis-horizontal-circle-outline" size={28} color="#3C9D8D" />
       </View>
     </View>
   );
@@ -105,50 +93,50 @@ export default function SetTimeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     paddingTop: 60,
     paddingHorizontal: 20,
   },
-  header: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  divider: { height: 3, backgroundColor: "#E0E0E0", marginBottom: 10 },
-  logoText: { fontSize: 18, fontWeight: "600", color: "#222", paddingLeft: 80 },
-  logoHighlight: { color: "#3C9D8D" },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  divider: { height: 3, backgroundColor: '#E0E0E0', marginBottom: 10 },
+  logoText: { fontSize: 18, fontWeight: '600', color: '#222', paddingLeft: 80 },
+  logoHighlight: { color: '#3C9D8D' },
   title: {
     fontSize: 18,
-    textAlign: "center",
+    textAlign: 'center',
     marginVertical: 30,
-    color: "#333",
+    color: '#333',
   },
   timeDisplay: {
-    alignSelf: "center",
+    alignSelf: 'center',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderWidth: 1,
-    borderColor: "#3C9D8D",
+    borderColor: '#3C9D8D',
     borderRadius: 20,
-    backgroundColor: "#F2F2F2",
+    backgroundColor: '#F2F2F2',
     marginBottom: 20,
   },
   timeText: {
     fontSize: 30,
-    fontWeight: "bold",
-    color: "#3C9D8D",
+    fontWeight: 'bold',
+    color: '#3C9D8D',
   },
   button: {
-    backgroundColor: "#3C9D8D",
+    backgroundColor: '#3C9D8D',
     padding: 12,
     borderRadius: 20,
-    width: "50%",
-    alignSelf: "center",
+    width: '50%',
+    alignSelf: 'center',
     marginTop: 10,
   },
-  buttonText: { color: "#fff", textAlign: "center", fontWeight: "600" },
+  buttonText: { color: '#fff', textAlign: 'center', fontWeight: '600' },
   bottomBar: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 30,
-    width: "90%",
-    alignSelf: "center",
-    flexDirection: "row",
-    justifyContent: "space-around",
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 });
