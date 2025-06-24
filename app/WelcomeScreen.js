@@ -6,7 +6,7 @@ export default function WelcomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/images/welcome-removebg-preview.png")} style={styles.image} />
+      {/* <Image source={require("../assets/images/welcome-removebg-preview.png")} style={styles.image} /> */}
       <Text style={styles.title}>Welcome</Text>
       <Text style={styles.subtitle}>Step into your health hub.</Text>
       <View style={styles.pagination}>

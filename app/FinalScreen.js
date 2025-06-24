@@ -6,7 +6,7 @@ export default function FinalScreen() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/images/Third-removebg-preview.png")} style={styles.image} />
+      {/* <Image source={require("../assets/images/Third-removebg-preview.png")} style={styles.image} /> */}
       <Text style={styles.title}>Health First!</Text>
       <Text style={styles.subtitle}>Your personal pharmacy at your fingertips.</Text>
       <View style={styles.pagination}>

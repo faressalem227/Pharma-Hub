@@ -5,10 +5,11 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import { HeaderBar, BottomBar, Loader } from '../components';
 import { SearchContext } from '../context/SearchContext';
+import { usePathname } from 'expo-router';
 
 export default function HomeScreen() {
   const { isLoading, location, searchData, setLocation } = useContext(SearchContext);
-
+  const pathname = usePathname
   console.log('location', location);
 
   useEffect(() => {}, [location]);
@@ -41,7 +42,7 @@ export default function HomeScreen() {
             }>
             {searchData.map((item) => (
               <Marker
-                key={`${item.ID}_${item.Latitude}_${item.Longitude}`}
+                key={`${item.ID}_${item.Latitude}_${item.Longitude}_${item.PharmacyName}_${new Date().getTime()}`}
                 pinColor="#FF6347"
                 coordinate={{
                   latitude: item.Latitude,
@@ -62,6 +63,7 @@ export default function HomeScreen() {
       )}
 
       <Loader isLoading={isLoading} />
+      {pathname}
       <BottomBar />
     </>
   );

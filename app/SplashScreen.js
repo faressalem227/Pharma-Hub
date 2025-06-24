@@ -13,7 +13,7 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/images/splash-removebg-preview.png")} style={styles.image} />
+      {/* <Image source={require("../assets/images/splash-removebg-preview.png")} style={styles.image} /> */}
       <View style={styles.textContainer}>
         <Text style={styles.text}>
           Your <Text style={styles.healthText}>health</Text> companion
