@@ -5,31 +5,91 @@ import { View, Text, ActivityIndicator, TouchableOpacity, FlatList } from 'react
 import Svg, { Path } from 'react-native-svg';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { SearchInput } from '../../components';
+import { SearchInput, FormField, Loader } from '../../components';
 import { SearchContext } from '../../context/SearchContext';
 import api from '../../utilities/api';
 
-const MedItem = ({ item, index, size, handleAdd, handleSave, drugList = [] }) => {
+const MedItem = ({ item, index, size, handleAdd, handleSave, drugList = [], savedMeds = [] }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const isIncluded = drugList.some((drug) => drug.ID === item.ID);
+  const isSaved = savedMeds.some((drug) => drug.DrugID === item.ID);
+
+  const [note, setNote] = useState('');
+  const [showNote, setShowNote] = useState(false);
+
+  const handleSaveMed = async () => {
+    try {
+      setIsLoading(true);
+      await handleSave(item.ID, note);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <View
-      className={`flex-row items-center justify-between py-4 ${index !== size - 1 ? 'border-b border-b-borderGray' : ''}`}
+      className={`gap-3 py-4 ${index !== size - 1 ? 'border-b border-b-borderGray' : ''}`}
       key={item.ID}>
-      <Text className="font-tregular text-lg text-secndryText">{item.DrugNameEN}</Text>
+      <View className="flex-row items-center justify-between ">
+        <Text className="font-tregular text-lg text-secndryText">{item.DrugNameEN}</Text>
+        {!isLoading && (
+          <View className="flex-row items-center gap-3">
+            {!isIncluded && (
+              <TouchableOpacity
+                onPress={() => handleAdd(item)}
+                className="rounded-md bg-mainText p-2">
+                <Text className="font-tregular text-white">Add</Text>
+              </TouchableOpacity>
+            )}
 
-      <View>
-        {!isIncluded && (
-          <TouchableOpacity onPress={() => handleAdd(item)} className="rounded-md bg-mainText p-2">
-            <Text className="font-tregular text-white">Add</Text>
-          </TouchableOpacity>
+            {isSaved && (
+              <TouchableOpacity
+                onPress={() => {
+                  if (showNote) {
+                    handleSave(item.ID, note);
+                    setShowNote(false);
+                    setNote('');
+                  } else {
+                    setShowNote(true);
+                  }
+                }}
+                className="rounded-md bg-mainText p-2">
+                <Text className="font-tregular text-white">{showNote ? 'Save' : 'Notes'}</Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity onPress={handleSaveMed}>
+              <Svg
+                width="24"
+                height="24"
+                viewBox="0 0 20 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <Path
+                  d="M10.4688 3.45166C12.5522 1.28685 14.7619 1.07678 16.417 1.8335C18.1132 2.60915 19.3496 4.45037 19.3496 6.63818C19.3495 8.86618 18.4368 10.5825 17.1367 12.0464C15.8144 13.5353 14.1456 14.7097 12.6357 15.8989L12.6348 15.8999C12.1102 16.3143 11.6358 16.6834 11.1768 16.9517C10.7175 17.22 10.335 17.3501 10 17.3501C9.66507 17.3501 9.28275 17.2192 8.82324 16.9507C8.36398 16.6823 7.88927 16.3136 7.36426 15.8999H7.36328C5.85389 14.7097 4.18563 13.5343 2.86328 12.0454C1.56325 10.5815 0.650476 8.86541 0.650391 6.63721C0.650391 4.44887 1.88692 2.60779 3.58301 1.83252C5.23801 1.07622 7.44779 1.28683 9.53125 3.45166L10 3.93799L10.4688 3.45166Z"
+                  stroke={isSaved ? 'none' : '#3C9D8D'}
+                  fill={isSaved ? '#3C9D8D' : 'none'}
+                  strokeWidth="1.3"
+                />
+              </Svg>
+            </TouchableOpacity>
+          </View>
         )}
+        {isLoading && <ActivityIndicator size={30} animating={isLoading} color="#227099" />}
       </View>
+
+      {showNote && isSaved && (
+        <FormField
+          value={note}
+          handleChangeText={(val) => setNote(val)}
+          placeholder="write your notes..."
+        />
+      )}
     </View>
   );
 };
 
 export default function SearchScreen() {
-  const [searchText, setSearchText] = useState('');
   const [debounceSearch, setDebounceSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,11 +101,13 @@ export default function SearchScreen() {
     handleRemove,
     getNearestPharmacy,
     drugList,
+    savedMeds,
+    getSavedMeds,
   } = useContext(SearchContext);
 
   const debounce = useDebouncedCallback((val) => {
     setDebounceSearch(val);
-  }, 200);
+  }, 300);
 
   const handleGetMedicine = async () => {
     try {
@@ -57,6 +119,20 @@ export default function SearchScreen() {
       console.error(error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSaveMed = async (id, note) => {
+    try {
+      const response = await api.post('saved-medicines', {
+        DrugID: id,
+        Notes: note,
+      });
+
+      await getSavedMeds();
+    } catch (error) {
+      console.error('Failed to save medicine:', error?.response?.data || error.message);
+      // Optionally show error toast/message
     }
   };
 
@@ -87,9 +163,7 @@ export default function SearchScreen() {
         </TouchableOpacity>
         <View className="flex-1">
           <SearchInput
-            value={searchText}
             onChange={(value) => {
-              setSearchText(value);
               debounce(value);
             }}
             handleSubmit={handleGetMedicine}
@@ -99,9 +173,9 @@ export default function SearchScreen() {
 
       {!isLoading && (
         <View className="flex-1">
-          {searchedDrugData.length === 0 && (
+          {/* {searchedDrugData.length === 0 && (
             <Text className="font-tmedium text-xl text-secndryText">Recent</Text>
-          )}
+          )} */}
 
           {drugList.length > 0 && (
             <View className="my-2 gap-5">
@@ -145,6 +219,8 @@ export default function SearchScreen() {
                   size={searchedDrugData.length}
                   handleAdd={handleAdd}
                   drugList={drugList}
+                  handleSave={handleSaveMed}
+                  savedMeds={savedMeds}
                 />
               )}
             />

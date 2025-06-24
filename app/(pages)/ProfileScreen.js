@@ -2,18 +2,20 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { View, Text, Image, Switch, TouchableOpacity } from 'react-native';
 import Svg, { Path, G, Defs, ClipPath, Rect } from 'react-native-svg';
 
 import { Navback } from '../../components';
 import { useGlobalContext } from '../../context/GlobalProvider';
+import { SearchContext } from '../../context/SearchContext';
 import api from '../../utilities/api';
 
 export default function ProfileScreen() {
   const [image, setImage] = useState(null);
 
   const { logOut, user, setUser } = useGlobalContext();
+  const { savedMeds, savedPharmacies } = useContext(SearchContext);
 
   const router = useRouter();
 
@@ -125,6 +127,7 @@ export default function ProfileScreen() {
             }
             className="mb-2 h-[5.5rem] w-[5.5rem] rounded-full"
           />
+
           <TouchableOpacity
             className="absolute -right-1 top-[50] rounded-full bg-mainText p-2"
             onPress={pickImage}>
@@ -183,7 +186,7 @@ export default function ProfileScreen() {
               <Text className="pt-2 font-tregular text-xl text-secndryText">Saved Pharmacies</Text>
             </View>
 
-            <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${3} Pharmacies`}</Text>
+            <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedPharmacies.length} Pharmacies`}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -201,7 +204,7 @@ export default function ProfileScreen() {
               <Text className="pt-2 font-tregular text-xl text-secndryText">Saved Medicines</Text>
             </View>
 
-            <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${8} Medicines`}</Text>
+            <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedMeds.length} Medicines`}</Text>
           </TouchableOpacity>
         </View>
       </View>
