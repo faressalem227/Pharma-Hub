@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+
 import { useGlobalContext } from '../../../context/GlobalProvider';
-import { useRouter } from 'expo-router';
 const ChatList = ({ chats, onChatPress }) => {
   const router = useRouter();
 
@@ -72,11 +74,7 @@ const ChatList = ({ chats, onChatPress }) => {
           {item.SenderName}: {item.Message}
         </Text>
       </View>
-      {item.IsRead == 0 && item.LastReciverID == id ? (
-        <View style={styles.unreadBadge}></View>
-      ) : (
-        <></>
-      )}
+      {item.IsRead == 0 && item.LastReciverID == id ? <View style={styles.unreadBadge} /> : <></>}
     </TouchableOpacity>
   );
 

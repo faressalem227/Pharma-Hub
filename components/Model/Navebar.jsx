@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import styles from "../Styles";
-import { useRouter } from "expo-router";
+/* eslint-disable prettier/prettier */
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+
+import styles from '../Styles';
 const Navbar = ({ onOpenSidebar, showChatIcon = true, onNewChat }) => {
   const [isOnDropdownPage, setIsOnDropdownPage] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handleBackAndLogin = () => {
     router.back();
@@ -17,7 +19,7 @@ const Navbar = ({ onOpenSidebar, showChatIcon = true, onNewChat }) => {
         <Ionicons name="menu-outline" size={28} color="#3C9D8D" />
       </TouchableOpacity>
 
-      <View style={{ flexDirection: "row", alignItems: "center", marginLeft: "auto" }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 'auto' }}>
         {showChatIcon && (
           <TouchableOpacity onPress={onNewChat}>
             <Ionicons
@@ -38,11 +40,11 @@ const Navbar = ({ onOpenSidebar, showChatIcon = true, onNewChat }) => {
 
 const customStyles = StyleSheet.create({
   roundedIcon: {
-    backgroundColor: "#3C9D8D",
+    backgroundColor: '#3C9D8D',
     borderRadius: 50,
     padding: 8,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
