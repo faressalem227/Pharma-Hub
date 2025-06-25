@@ -22,7 +22,7 @@ function ChatScreen() {
     try {
       // Simulate fetching chat data
       const response = await api.get('chat');
-      const data = setChatData(response.data.data);
+      setChatData(response.data.data);
       console.log('Chat data:', chatData);
     } catch (error) {
       console.error('Error fetching chat data:', error);

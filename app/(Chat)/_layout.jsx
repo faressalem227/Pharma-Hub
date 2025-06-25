@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { Slot, useRouter } from 'expo-router';
-import { use, useEffect } from 'react';
-import { Touchable, TouchableOpacity, View } from 'react-native';
-import { API_BASE_URL } from '../../utilities/api';
+import { useEffect } from 'react';
+import { View } from 'react-native';
 import { io } from 'socket.io-client';
+
 import { useGlobalContext } from '../../context/GlobalProvider';
+import { API_BASE_URL } from '../../utilities/api';
 export const socket = io(API_BASE_URL?.split('/api')?.[0], {
   transports: ['websocket'],
   autoConnect: true,

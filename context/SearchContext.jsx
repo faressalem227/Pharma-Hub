@@ -9,6 +9,8 @@ export const SearchContext = createContext({
   location: {
     longitude: 0,
     latitude: 0,
+    latitudeDelta: 0,
+    longitudeDelta: 0,
   },
 
   searchData: [],
@@ -22,19 +24,25 @@ export const SearchContext = createContext({
   isLoading: false,
   getNearestPharmacy: () => {},
   setLocation: () => {},
+  pharmacy: {},
+  setPharmacy: () => {},
+  savedMeds: [],
+  getSavedMeds: () => {},
+  savedPharmacies: [],
+  getsavedPharmacies: () => {},
 });
 
 const SearchContextProvider = ({ children }) => {
   const [searchData, setSearchData] = useState([]);
   const [drugList, setDrugList] = useState([]);
+  const [savedMeds, setSavedMeds] = useState([]);
   const [searchedDrugData, setSearchedDrugData] = useState([]);
   const [DrugListIds, setDrugListIds] = useState([]);
-  const [location, setLocation] = useState({
-    longitude: 0,
-    latitude: 0,
-  });
+  const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialFetch, setInitialFetch] = useState(true);
+  const [pharmacy, setPharmacy] = useState(null);
+  const [savedPharmacies, setSavedPharmacies] = useState([]);
 
   const getLocation = async () => {
     try {
@@ -68,7 +76,7 @@ const SearchContextProvider = ({ children }) => {
     try {
       if (isInitialFetch) setIsLoading(true);
       const req = await api.get(
-        `pharmacy/nearest?Longitude=${location.longitude}&Latitude=${location.latitude}&DrugID=${DrugListIds.join(';')}&SearchRadiusMeters=1000`
+        `pharmacy/nearest?Longitude=${location?.longitude}&Latitude=${location?.latitude}&DrugID=${DrugListIds.join(';')}&SearchRadiusMeters=500`
       );
 
       const res = req.data.data;
@@ -105,6 +113,24 @@ const SearchContextProvider = ({ children }) => {
     removeDrug(item.ID);
   };
 
+  const getSavedMeds = async () => {
+    try {
+      const response = await api.get('saved-medicines');
+      setSavedMeds(response?.data?.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getsavedPharmacies = async () => {
+    try {
+      const response = await api.get('saved-pharmacies');
+      setSavedPharmacies(response?.data?.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (location) {
       getNearestPharmacy();
@@ -117,6 +143,8 @@ const SearchContextProvider = ({ children }) => {
 
   useEffect(() => {
     getLocation();
+    getSavedMeds();
+    getsavedPharmacies();
   }, []);
 
   return (
@@ -133,6 +161,12 @@ const SearchContextProvider = ({ children }) => {
         getNearestPharmacy,
         setLocation,
         location,
+        pharmacy,
+        setPharmacy,
+        savedMeds,
+        getSavedMeds,
+        savedPharmacies,
+        getsavedPharmacies,
       }}>
       {children}
     </SearchContext.Provider>
