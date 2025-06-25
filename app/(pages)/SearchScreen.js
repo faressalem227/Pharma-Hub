@@ -112,6 +112,9 @@ export default function SearchScreen() {
     drugList,
     savedMeds,
     getSavedMeds,
+    location,
+    setSearchData,
+    setDrugList
   } = useContext(SearchContext);
 
   const debounce = useDebouncedCallback((val) => {
@@ -210,10 +213,13 @@ export default function SearchScreen() {
         
         const mainReq = await api.post('/drug/neareast/prescription', {
             PrescriptionInfo: matchedDrugs,
-            Latitude: 30.0444,
-            Longitude: 31.2357
+            Latitude: location?.latitude,
+            Longitude: location?.longitude
           });
         const nearestPharmacies = mainReq.data;
+        setSearchData(nearestPharmacies.data)
+        setSearchedDrugData(nearestPharmacies.drugs)
+        setDrugList(nearestPharmacies.drugs)
         console.log(nearestPharmacies, "nearestPharmacies");
         setFile(false); // Reset file after sending
         // alert("Prescription sent successfully!");
@@ -309,6 +315,8 @@ export default function SearchScreen() {
               </View>
               <View className="flex-row flex-wrap items-center gap-3">
                 {drugList.map((drug) => {
+                  console.log(drug, "drugList");
+                  
                   return (
                     <TouchableOpacity
                       key={drug.ID}

@@ -14,7 +14,7 @@ const PharmacyDetails = () => {
 
   const router = useRouter();
 
-  const isSaved = savedPharmacies.some((item) => item.ID === pharmacy.PharmacyID);
+  const isSaved = savedPharmacies?.some((item) => item.ID === pharmacy.PharmacyID);
 
   const handleSavePh = async () => {
     try {

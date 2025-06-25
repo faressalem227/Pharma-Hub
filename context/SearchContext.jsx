@@ -167,6 +167,7 @@ const SearchContextProvider = ({ children }) => {
         getSavedMeds,
         savedPharmacies,
         getsavedPharmacies,
+        setDrugList
       }}>
       {children}
     </SearchContext.Provider>

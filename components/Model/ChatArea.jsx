@@ -21,7 +21,7 @@ import api from "../../utilities/api";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { use } from "react";
 
-const ChatArea = ({ messages, setMessages, file, setFile, openCamera, openDocumentPicker, id, ItemType }) => {
+const ChatArea = ({ messages, setMessages, file, setFile, openCamera, openDocumentPicker, id, ItemType,sessionID }) => {
   const [input, setInput] = useState("");
 //   const [recording, setRecording] = useState(null);
 //   const [isRecording, setIsRecording] = useState(false); 
@@ -100,8 +100,8 @@ const ChatArea = ({ messages, setMessages, file, setFile, openCamera, openDocume
         method: 'POST',
         body: JSON.stringify({
           "question": input,
-          "user_id": 1,
-          "session_id": 3,
+          "user_id": user?.user?.id || "guest",
+          "session_id": sessionID,
           "type":type,
           "url":img
         }),
