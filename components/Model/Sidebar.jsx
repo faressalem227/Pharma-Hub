@@ -1,25 +1,25 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import styles from "../Styles";
+/* eslint-disable prettier/prettier */
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 
-import { useRouter } from "expo-router";
-import { useGlobalContext } from "../../context/GlobalProvider";
+import { useGlobalContext } from '../../context/GlobalProvider';
+import styles from '../Styles';
 
 //import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Sidebar = ({ isVisible, onClose }) => {
-
-  const router = useRouter()
+  const router = useRouter();
   const { user, isLogged } = useGlobalContext();
 
   // Function to handle logout
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     onClose();
     //setIsLogged(false)
     //setUser(null)
-    console.log("User logged out");
-    router.replace("/");
+    console.log('User logged out');
+    router.replace('/');
   };
 
   return (
