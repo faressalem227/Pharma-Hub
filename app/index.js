@@ -88,7 +88,7 @@ export default function HomeScreen() {
             ))}
           </MapView>
 
-          <View className="absolute  top-10 z-10 h-[500px]  w-[200px] overflow-auto rounded-br-2xl rounded-tr-2xl bg-white p-3 shadow-lg">
+          <View className="absolute  top-10 z-10 h-[450px]  w-[200px] overflow-auto rounded-br-2xl rounded-tr-2xl bg-white p-3 shadow-lg">
             <Text className="mb-3 text-lg font-bold text-mainText">Pharmacies</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
               {searchData.map((pharmacy) => (
@@ -110,7 +110,7 @@ export default function HomeScreen() {
                     {pharmacy.PharmacyName}
                   </Text>
 
-                  <Text className="font-tregular text-xs text-secndryText">{`${pharmacy.Matches} matches`}</Text>
+                  <Text className="font-tregular text-xs text-secndryText">{`${pharmacy.MatchedDrugNames} matches`}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>

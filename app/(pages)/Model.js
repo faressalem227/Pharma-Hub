@@ -14,6 +14,7 @@ export default function ChatPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const { id, ItemType } = useLocalSearchParams();
+  const [sessionID, setSessionID] = useState(new Date().getTime().toString());
   const router = useRouter();
 
   const openCamera = async () => {
@@ -64,6 +65,7 @@ export default function ChatPage() {
 
   const clearMessages = () => {
     setMessages([]);
+    setSessionID(new Date().getTime().toString());
   };
 
   return (
@@ -80,6 +82,7 @@ export default function ChatPage() {
           openDocumentPicker={openDocumentPicker}
           file={file}
           setFile={setFile}
+          sessionID={sessionID}
           id={id}
           ItemType={ItemType}
         />

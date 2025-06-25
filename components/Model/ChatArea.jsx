@@ -29,6 +29,7 @@ const ChatArea = ({
   openDocumentPicker,
   id,
   ItemType,
+  sessionID,
 }) => {
   const [input, setInput] = useState('');
   //   const [recording, setRecording] = useState(null);
@@ -108,9 +109,9 @@ const ChatArea = ({
         method: 'POST',
         body: JSON.stringify({
           question: input,
-          user_id: 1,
-          session_id: 3,
-          type,
+          user_id: user?.user?.id || 'guest',
+          session_id: sessionID,
+          type: type,
           url: img,
         }),
         headers: {
