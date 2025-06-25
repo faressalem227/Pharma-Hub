@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useRouter } from 'expo-router';
+import * as Notifications from 'expo-notifications';
 import { useEffect, useState } from 'react';
 import {
   View,
@@ -11,6 +11,7 @@ import {
   ScrollView,
   TextInput,
   Platform,
+  Alert,
 } from 'react-native';
 
 import { Navback, Loader } from '../../components';
@@ -30,9 +31,12 @@ export default function ReminderScreen() {
   const [step, setStep] = useState('');
   const [newMed, setNewMed] = useState({
     DrugName: '',
-    isRepeated: true,
-    houres: [],
+    IsRepeated: true,
+    hours: [],
   });
+
+  const [id, setID] = useState(0);
+  const [notificationId, setNotificationId] = useState(null); // NEW
 
   const [time, setTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
@@ -49,25 +53,66 @@ export default function ReminderScreen() {
     }
   };
 
+  const requestNotificationPermissions = async () => {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      Alert.alert('Permission denied', 'You must enable notifications to receive reminders.');
+    }
+  };
+
+  const scheduleAlarm = async () => {
+    const [hour, minute] = newMed.hours;
+
+    const now = new Date();
+    const targetTime = new Date();
+    targetTime.setHours(hour);
+    targetTime.setMinutes(minute);
+    targetTime.setSeconds(0);
+
+    // If the time has already passed today, schedule for tomorrow
+    if (targetTime <= now) {
+      targetTime.setDate(targetTime.getDate() + 1);
+    }
+
+    const id = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '💊 Medicine Reminder',
+        body: `Time to take your medicine: ${newMed.DrugName}`,
+        sound: true,
+        android: {
+          channelId: 'default',
+          icon: 'notification-icon',
+        },
+      },
+      trigger: targetTime, // <-- use Date object
+    });
+
+    setNotificationId(id);
+  };
+
+  const resetForm = () => {
+    setStep('');
+    setNewMed({ DrugName: '', IsRepeated: true, hours: [] });
+    setTime(new Date());
+    setID(0);
+    setNotificationId(null);
+  };
+
   const handleSave = async () => {
     try {
       setIsLoading(true);
       const response = await api.post('drugSchedule', newMed);
-      setNewMed({
-        DrugName: '',
-        isRepeated: true,
-        houres: [],
-      });
 
-      setStep('');
-      setNewMed({
-        DrugName: '',
-        isRepeated: true,
-        houres: [],
-      });
+      await scheduleAlarm();
 
-      console.log(response.data);
-
+      resetForm();
       await getReminders();
     } catch (error) {
       console.error(error);
@@ -76,21 +121,23 @@ export default function ReminderScreen() {
     }
   };
 
-  const handleEdit = async (id) => {
+  const handleEdit = async () => {
     try {
       setIsLoading(true);
-      const response = await api.put('drugSchedule', {
+
+      // Cancel old notification if needed
+      if (notificationId) {
+        await Notifications.cancelScheduledNotificationAsync(notificationId);
+      }
+
+      await api.put('drugSchedule', {
         ...newMed,
         ScheduleDrugID: id,
       });
 
-      setStep('');
-      setNewMed({
-        DrugName: '',
-        isRepeated: true,
-        houres: [],
-      });
+      await scheduleAlarm();
 
+      resetForm();
       await getReminders();
     } catch (error) {
       console.error(error);
@@ -99,11 +146,11 @@ export default function ReminderScreen() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
     try {
       setIsLoading(true);
-      const response = await api.delete(`drugSchedule?ScheduleDrugID=${id}`);
-
+      await api.delete(`drugSchedule?ScheduleDrugID=${id}`);
+      resetForm();
       await getReminders();
     } catch (error) {
       console.error(error);
@@ -113,12 +160,11 @@ export default function ReminderScreen() {
   };
 
   useEffect(() => {
+    requestNotificationPermissions();
     getReminders();
   }, []);
 
-  // console.log(newMed);
-
-  console.log(reminders);
+  console.log(newMed);
 
   return (
     <View className="flex-1 bg-white p-4">
@@ -134,24 +180,39 @@ export default function ReminderScreen() {
       {!isLoading && (
         <>
           {!step && (
-            <View className="relative flex-1">
-              <ScrollView>
+            <View className="relative mt-4 flex-1 ">
+              <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="flex-1 ">
                 {reminders?.map((reminder, index) => (
-                  <View key={index} style={styles.card}>
-                    <View style={styles.row}>
-                      <Text style={styles.time}>{reminder.time}</Text>
-                    </View>
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.card}
+                    onPress={() => {
+                      setID(reminder.ScheduleDrugID);
+                      setNewMed({
+                        DrugName: reminder.DrugName,
+                        IsRepeated: reminder.IsRepeated,
+                        hours: [
+                          new Date(reminder.ScheduleTime).getHours(),
+                          new Date(reminder.ScheduleTime).getMinutes(),
+                        ],
+                      });
+                      setTime(new Date(reminder.ScheduleTime));
+                      setStep('new');
+                    }}>
+                    <Text className="font-tbold text-lg text-white">
+                      {formatTime(new Date(reminder.ScheduleTime))}
+                    </Text>
+
                     <View style={[styles.row, { marginTop: 10 }]}>
                       <MaterialCommunityIcons
                         name="pill"
-                        size={25}
+                        size={40}
                         color="#fff"
                         style={{ marginRight: 6 }}
                       />
-                      <Text style={styles.medName}>{reminder.name}</Text>
+                      <Text className="font-tbold text-lg text-white">{reminder.DrugName}</Text>
                     </View>
-                    <Text style={styles.details}>{reminder.details}</Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </ScrollView>
               <TouchableOpacity style={styles.fab} onPress={() => setStep('new')}>
@@ -177,9 +238,25 @@ export default function ReminderScreen() {
                 }
               />
 
-              <TouchableOpacity style={styles.button} onPress={() => setStep('time')}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: newMed.DrugName.trim() === '' ? '#aaa' : '#3C9D8D',
+                  },
+                ]}
+                onPress={() => setStep('time')}
+                disabled={newMed.DrugName.trim() === ''}>
                 <Text style={styles.buttonText}>Next</Text>
               </TouchableOpacity>
+
+              {id > 0 && (
+                <TouchableOpacity
+                  className="mt-3 w-[30%] self-center rounded-[20px] bg-red-500 p-3"
+                  onPress={handleDelete}>
+                  <Text className="text-center text-white">Delete</Text>
+                </TouchableOpacity>
+              )}
             </View>
           )}
 
@@ -197,18 +274,23 @@ export default function ReminderScreen() {
                   mode="time"
                   is24Hour={false}
                   display={Platform.OS === 'ios' ? 'spinner' : 'clock'}
-                  onChange={(_e, val) => {
-                    setTime(val);
-                    setNewMed((prev) => ({
-                      ...[prev],
-                      hours: [val.getHours(), val.getMinutes()],
-                    }));
+                  onChange={(event, selectedDate) => {
+                    if (event.type === 'set' && selectedDate) {
+                      setTime(selectedDate);
+                      setNewMed((prev) => ({
+                        ...prev,
+                        hours: [selectedDate.getHours(), selectedDate.getMinutes()],
+                      }));
+                    }
                     setShowPicker(false);
                   }}
                 />
               )}
 
-              <TouchableOpacity style={styles.button} className="mt-5" onPress={handleSave}>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: '#3C9D8D' }]}
+                className="mt-5"
+                onPress={id > 0 ? handleEdit : handleSave}>
                 <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             </View>
@@ -222,32 +304,22 @@ export default function ReminderScreen() {
 }
 
 const styles = StyleSheet.create({
-  iconWrapper: { marginRight: 8 },
-  logoText: { fontSize: 18, fontWeight: '600', color: '#222', paddingLeft: 95 },
-  logoHighlight: { color: '#00A896' },
-  greeting: { fontSize: 16, color: '#555' },
-  userName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 20,
-  },
+  // ... same as before
   card: {
+    marginHorizontal: 'auto',
     backgroundColor: '#3C9D8D',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 25,
+    padding: 15,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
     elevation: 4,
-    width: '100%',
+    width: '80%',
+    height: 150,
     marginBottom: 20,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
-  time: { fontSize: 14, color: '#fff', fontWeight: '700' },
-  medName: { fontSize: 16, color: '#fff', fontWeight: 'bold' },
-  details: { fontSize: 13, color: '#E6F5F2', marginTop: 8, marginLeft: 26 },
   fab: {
     position: 'absolute',
     bottom: 80,
@@ -259,7 +331,6 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 5,
   },
-
   title: {
     fontSize: 18,
     textAlign: 'center',
@@ -278,7 +349,6 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: '#F2F2F2',
   },
-
   button: {
     backgroundColor: '#3C9D8D',
     padding: 12,
@@ -286,9 +356,7 @@ const styles = StyleSheet.create({
     width: '30%',
     alignSelf: 'center',
   },
-
   buttonText: { color: '#fff', textAlign: 'center', fontWeight: '600' },
-
   timeTitle: {
     fontSize: 18,
     textAlign: 'center',
