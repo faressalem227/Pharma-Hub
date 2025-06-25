@@ -2,9 +2,10 @@
 
 import { useFonts } from 'expo-font';
 import * as Location from 'expo-location';
+import * as Notifications from 'expo-notifications';
 import { router, SplashScreen, Slot } from 'expo-router';
 import { useEffect } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import GlobalProvider from '../context/GlobalProvider';
@@ -24,80 +25,6 @@ SplashScreen.preventAutoHideAsync();
 const RootStack = () => {
   const insets = useSafeAreaInsets();
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       // Request permissions
-  //       const { status } = await Location.requestForegroundPermissionsAsync();
-  //       if (status !== 'granted') {
-  //         Alert.alert('Permission Denied', 'Location permission is required to use this feature.');
-  //         setLoading(false);
-  //         return;
-  //       }
-
-  //       // Get current location
-  //       const loc = await Location.getCurrentPositionAsync({});
-  //       setLocation(loc);
-  //     } catch (error) {
-  //       Alert.alert('Error', 'Failed to get location.');
-  //       console.error(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   })();
-  // }, []);
-
-  // Handle foreground messages
-  // useEffect(() => {
-  //   const unsubscribeForeground = messaging().onMessage(async (remoteMessage) => {
-  //     try {
-  //       // Display a custom notification using Notifee
-  //       const channelId = await notifee.createChannel({
-  //         id: 'default',
-  //         name: 'Default Channel',
-  //         android: {
-  //           importance: AndroidImportance.HIGH,
-  //         },
-  //       });
-
-  //       await notifee.displayNotification({
-  //         title: remoteMessage.notification?.title,
-  //         body: remoteMessage.notification?.body,
-  //         android: {
-  //           channelId: channelId,
-  //         },
-  //       });
-  //     } catch (error) {
-  //       console.error('Error displaying notification:', error);
-  //     }
-  //   });
-
-  //   return unsubscribeForeground;
-  // }, []);
-
-  // Handle initial notification (app opened from notification)
-  // useEffect(() => {
-  //   messaging()
-  //     .getInitialNotification()
-  //     .then((remoteMessage) => {
-  //       if (remoteMessage) {
-  //         console.log('Notification caused app to open from quit state:', remoteMessage);
-
-  //         // Handle deep linking based on the message content
-  //         const type = remoteMessage?.data?.type;
-  //         if (type === 'navigation' && remoteMessage?.data?.route) {
-  //           // Add a small delay to ensure the app is fully loaded
-  //           setTimeout(() => {
-  //             router.navigate(remoteMessage.data.route);
-  //           }, 1000);
-  //         }
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error getting initial notification:', error);
-  //     });
-  // }, []);
-
   const [fontsLoaded, fontError] = useFonts({
     'Tajawal-Bold': require('../assets/fonts/Tajawal-Bold.ttf'),
     'Tajawal-Light': require('../assets/fonts/Tajawal-Light.ttf'),
@@ -115,6 +42,26 @@ const RootStack = () => {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
+
+  useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+      }),
+    });
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'Medicine Reminders',
+        importance: Notifications.AndroidImportance.HIGH,
+        sound: 'default',
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#3C9D8D',
+      });
+    }
+  }, []);
 
   if (!fontsLoaded && !fontError) return null;
 

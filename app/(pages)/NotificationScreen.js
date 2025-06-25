@@ -1,31 +1,38 @@
+/* eslint-disable prettier/prettier */
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
+import { Navback, Loader } from '../../components';
+import api from '../../utilities/api';
+
+// [
+//     {
+//       id: 1,
+//       title: `"Your Order is Delivered"`,
+//       description: `"Your order #1234 has been delivered successfully."`,
+//       isRead: false,
+//       date: `"2025-06-13 08:30 AM"`,
+//     },
+//     {
+//       id: 2,
+//       title: `"New Offer Just for You!"`,
+//       description: `"Get 30% off your next purchase. Limited time offer!"`,
+//       isRead: false,
+//       date: `"2025-06-12 04:20 PM"`,
+//     },
+//     {
+//       id: 3,
+//       title: `"Reminder"`,
+//       description: `"Don’t forget to take your medicine today at 8:00 PM."`,
+//       isRead: true,
+//       date: `"2025-06-11 07:00 AM"`,
+//     },
+//   ]
+
 export default function NotificationScreen() {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: `"Your Order is Delivered"`,
-      description: `"Your order #1234 has been delivered successfully."`,
-      isRead: false,
-      date: `"2025-06-13 08:30 AM"`,
-    },
-    {
-      id: 2,
-      title: `"New Offer Just for You!"`,
-      description: `"Get 30% off your next purchase. Limited time offer!"`,
-      isRead: false,
-      date: `"2025-06-12 04:20 PM"`,
-    },
-    {
-      id: 3,
-      title: `"Reminder"`,
-      description: `"Don’t forget to take your medicine today at 8:00 PM."`,
-      isRead: true,
-      date: `"2025-06-11 07:00 AM"`,
-    },
-  ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   const markAsRead = (id) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
@@ -35,28 +42,53 @@ export default function NotificationScreen() {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
   };
 
+  const handleGetNots = async () => {
+    try {
+      setIsLoading(true);
+      const response = await api.get('notifications');
+
+      setNotifications(response.data.data.notifications);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetNots();
+  }, []);
+
+  console.log(notifications);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Notifications</Text>
-
-      <TouchableOpacity onPress={markAllAsRead} style={styles.markAllBtn}>
+    <View className="flex-1 bg-white p-4">
+      {/* <TouchableOpacity onPress={markAllAsRead} style={styles.markAllBtn}>
         <Text style={styles.markAllText}>Mark all as read</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <View className="mb-8 flex-row">
+        <Navback title="Notifications" />
+      </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}>
         {notifications.map((notif) => (
-          <View key={notif.id} style={[styles.card, notif.isRead && styles.readCard]}>
-            <View style={styles.cardContent}>
-              <Ionicons
-                name={notif.isRead ? 'notifications-outline' : 'notifications'}
-                size={20}
-                color={notif.isRead ? '#9CA3AF' : '#3C9D8D'}
-                style={{ marginRight: 10, marginTop: 4 }}
-              />
+          <View key={notif.ID} style={[styles.card, notif.isRead && styles.readCard]}>
+            <View className="">
+              <View className="flex-row items-center gap-2">
+                <Ionicons
+                  name={notif.isRead ? 'notifications-outline' : 'notifications'}
+                  size={20}
+                  color={notif.isRead ? '#9CA3AF' : '#3C9D8D'}
+                />
+                <Text style={styles.title}>{notif.Header}</Text>
+              </View>
+
               <View style={styles.textContainer}>
                 <Text style={styles.dateText}>{notif.date}</Text>
-                <Text style={styles.title}>{notif.title}</Text>
-                <Text style={styles.description}>{notif.description}</Text>
+                <Text style={styles.description}>{notif.Body}</Text>
                 {!notif.isRead ? (
                   <TouchableOpacity onPress={() => markAsRead(notif.id)}>
                     <Text style={styles.markAsReadText}>Mark as read</Text>
@@ -98,7 +130,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    borderRadius: 12,
+    borderRadius: 15,
     padding: 16,
     backgroundColor: '#F9FAFB',
   },
@@ -125,7 +157,6 @@ const styles = StyleSheet.create({
   },
   description: {
     color: '#4B5563',
-    marginBottom: 8,
   },
   markAsReadBtn: {
     alignSelf: 'flex-start',
