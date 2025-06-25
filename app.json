@@ -15,9 +15,15 @@
     },
     "plugins": [
       "expo-router",
-      "./plugins/withReactNativeFirebaseApp",
-      "./plugins/withReactNativeFirebaseMessaging",
-      "expo-font"
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
     ],
 
     "orientation": "portrait",
@@ -34,7 +40,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/pharmaLogo.png",
         "backgroundColor": "#ffffff"
       },
       "config": {
