@@ -16,9 +16,11 @@ function formatDistance(meters) {
     return (meters / 1000).toFixed(1) + ' km';
   }
 }
+import { usePathname } from 'expo-router';
 
 export default function HomeScreen() {
   const { isLoading, location, searchData, setLocation, setPharmacy } = useContext(SearchContext);
+  const pathname = usePathname() 
   const router = useRouter();
 
   const mapRef = useRef(null);
@@ -71,7 +73,7 @@ export default function HomeScreen() {
           >
             {searchData.map((item) => (
               <Marker
-                key={`${item.PharmacyID}_${item.Latitude}_${item.Longitude}`}
+                key={`${item.PharmacyID}_${item.Latitude}_${item.Longitude}_${item.PharmacyName}_${new Date().getTime()}`}
                 ref={(ref) => {
                   if (ref) markerRefs.current[item.PharmacyID] = ref;
                 }}
@@ -148,6 +150,7 @@ export default function HomeScreen() {
         </View>
       )}
       <Loader isLoading={isLoading} />
+      {pathname}
       <BottomBar />
     </>
   );

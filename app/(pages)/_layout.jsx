@@ -7,7 +7,7 @@ import { BottomBar } from '../../components';
 export default function Layout() {
   const pathname = usePathname();
 
-  const hideBottomBar = pathname === '/SplashRScreen';
+  const hideBottomBar = pathname === '/SplashRScreen'  || pathname === '/Login' || pathname === '/Register' || pathname === '/Model';
   return (
     <View style={{ flex: 1 }}>
       <Slot />
