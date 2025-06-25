@@ -8,8 +8,8 @@ import * as SecureStore from 'expo-secure-store';
 
 // const API_BASE_URL = 'http://192.168.1.25:8080/api/';
 
-const API_BASE_URL = 'http://138.201.157.90/api/';
-// const API_BASE_URL = 'http://192.168.1.21:8080/api';
+export const API_BASE_URL = 'http://138.201.157.90/api/';
+// export const API_BASE_URL = 'http://192.168.1.21:8080/api/';
 
 export const transcripeUrl = 'http://192.168.1.242:5000/api';
 export const streamBaseUrl = 'http://192.168.1.242:8000/api';

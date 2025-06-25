@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useRef, useEffect } from 'react';
 import {
   View,
@@ -9,8 +10,9 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Platform,
+  FlatList,
 } from 'react-native';
-import { FlatList } from 'react-native';
+
 export default function ChatScreen({ messages, onSendMessage, UserID }) {
   const [newMessage, setNewMessage] = useState('');
   const sendMessage = () => {
@@ -22,14 +24,14 @@ export default function ChatScreen({ messages, onSendMessage, UserID }) {
   console.log(Platform.OS);
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS == 'ios' ? 'padding' : undefined} // Adjust based on your platform
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Adjust based on your platform
       enabled
       style={{ flex: 1 }}
       keyboardVerticalOffset={50}>
       <FlatList
         data={messages} // Reverse to show the latest message at the bottom
-        scrollEnabled={true}
-        snapToEnd={true}
+        scrollEnabled
+        snapToEnd
         ref={flatListRef}
         style={styles.chatContainer}
         keyExtractor={(item) => item.ID.toString()}
@@ -37,13 +39,12 @@ export default function ChatScreen({ messages, onSendMessage, UserID }) {
           <View
             style={[
               styles.messageContainer,
-              msg.Sender == UserID ? styles.sentMessage : styles.receivedMessage,
+              msg.Sender === UserID ? styles.sentMessage : styles.receivedMessage,
             ]}>
             {/* <Text style={styles.sender}>{msg.SenderName}</Text> */}
             <Text style={styles.text}>{msg.Message}</Text>
             <View style={styles.metadata}>
               <Text style={styles.timestamp}>
-                {' '}
                 {new Date(msg.TimeStamp)
                   ?.toLocaleTimeString({
                     hour12: true,
@@ -64,11 +65,9 @@ export default function ChatScreen({ messages, onSendMessage, UserID }) {
           </View>
         )}
         // contentContainerStyle={styles.chatContainer}
-
         maxToRenderPerBatch={10}
         initialNumToRender={10}
         inverted
-
         // onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: false })}
         // onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
       />
@@ -97,10 +96,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   messageContainer: {
-    minWidth: '40%',
+    maxWidth: '45%',
     marginVertical: 5,
-    padding: 10,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 25,
   },
   sentMessage: {
     alignSelf: 'flex-end',

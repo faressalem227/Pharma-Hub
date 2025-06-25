@@ -52,7 +52,13 @@ function ChatScreen() {
     };
   }, []);
 
-  const handleSearch = () => {};
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    const filtered = chatData.filter((chat) =>
+      chat.ChatTitle.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilterdChats(filtered);
+  };
 
   useEffect(() => {
     if (chatData) {
@@ -92,12 +98,12 @@ function ChatScreen() {
         </View>
 
         <View className="mx-auto mb-4 w-[80%] rounded-full bg-white">
-          <SearchInput />
+          <SearchInput onChange={(val) => handleSearch(val)} />
         </View>
       </View>
 
       <View className="flex-1 bg-white p-4">
-        <ChatList chats={chatData} />
+        <ChatList chats={filterdChats} />
         <BottomBar />
       </View>
     </>
