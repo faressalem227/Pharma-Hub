@@ -11,7 +11,7 @@ import { icons } from '../../constants';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import api from '../../utilities/api';
 export default function Chat() {
-  const { ChatID, UserPhoto, ChatTitle, ReceiverID } = useLocalSearchParams();
+  let { ChatID, UserPhoto, ChatTitle, ReceiverID } = useLocalSearchParams();
   const [messages, setMessages] = useState([]);
   const {
     user: { id: UserID },
@@ -62,9 +62,11 @@ export default function Chat() {
       console.log('Socket listener removed');
     };
   }, [ChatID]);
+
   useEffect(() => {
     getMessage();
   }, []);
+
   return (
     <View className="flex-1 bg-white">
       <View className="border-gray-200   gap- flex-row items-center   border-b-[0.4px] border-[#00000004]  px-4 py-6">

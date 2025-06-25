@@ -1,257 +1,360 @@
 /* eslint-disable prettier/prettier */
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { useEffect, useState, useContext } from 'react';
+import { View, Text, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+import { useDebouncedCallback } from 'use-debounce';
 
-export default function SearchScreen() {
-  const [searchQuery, setSearchQuery] = useState('');
+import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 
-  const router = useRouter();
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+
+import { SearchInput, FormField, Loader } from '../../components';
+import { SearchContext } from '../../context/SearchContext';
+import api, { streamBaseUrl, transcripeUrl } from '../../utilities/api';
+import styles from '../../components/Styles';
+
+const MedItem = ({ item, index, size, handleAdd, handleSave, drugList = [], savedMeds = [] }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const isIncluded = drugList.some((drug) => drug.ID === item.ID);
+  
+  const isSaved = savedMeds.some((drug) => drug.DrugID === item.ID);
+
+  const [note, setNote] = useState('');
+  const [showNote, setShowNote] = useState(false);
+
+  const handleSaveMed = async () => {
+    try {
+      setIsLoading(true);
+      await handleSave(item.ID, note);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.arrow}>
-        <Ionicons name="arrow-back" size={21} color="#24828D" style={{ marginHorizontal: 5 }} />
-      </View>
-      <View style={styles.searchBar}>
-        <Ionicons name="search" size={20} color="#888" style={{ marginHorizontal: 5 }} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for medications or pharmacies..."
-          placeholderTextColor="#888"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        <Ionicons name="mic" size={20} color="#24828D" style={{ marginHorizontal: 10 }} />
-        <Ionicons name="camera" size={20} color="#24828D" style={{ marginRight: 10 }} />
-      </View>
-
-      <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
-        <Text style={styles.sectionTitle}>Search by categories</Text>
-        <View style={styles.rowWrap}>
-          {[
-            '💊 Pain Relievers',
-            '🤧 Cold & Allergy Medications',
-            '🦠 Antibiotics',
-            'Blood Pressure & Heart Medications',
-          ].map((item, index) => (
-            <TouchableOpacity key={index} style={styles.categoryBtn}>
-              <Text style={styles.categoryText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <Text style={styles.sectionTitle}>Search by Active Ingredient</Text>
-        <View style={styles.rowWrap}>
-          {['Paracetamol', 'Ibuprofen', 'Amoxicillin', 'Metformin', 'Cetirizine', 'Omeprazole'].map(
-            (item, index) => (
-              <TouchableOpacity key={index} style={styles.ingredientBtn}>
-                <Text style={styles.ingredientText}>{item}</Text>
+    <View
+      className={`gap-3 py-4 ${index !== size - 1 ? 'border-b border-b-borderGray' : ''}`}
+      key={item.ID}>
+      <View className="flex-row items-center justify-between ">
+        <Text className="font-tregular text-lg text-secndryText">{item.DrugNameEN}</Text>
+        {!isLoading && (
+          <View className="flex-row items-center gap-3">
+            {!isIncluded && (
+              <TouchableOpacity
+                onPress={() => handleAdd(item)}
+                className="rounded-md bg-mainText p-2">
+                <Text className="font-tregular text-white">Add</Text>
               </TouchableOpacity>
-            )
+            )}
+
+            {isSaved && (
+              <TouchableOpacity
+                onPress={() => {
+                  if (showNote) {
+                    handleSave(item.ID, note);
+                    setShowNote(false);
+                    setNote('');
+                  } else {
+                    setShowNote(true);
+                  }
+                }}
+                className="rounded-md bg-mainText p-2">
+                <Text className="font-tregular text-white">{showNote ? 'Save' : 'Notes'}</Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity onPress={handleSaveMed}>
+              <Svg
+                width="24"
+                height="24"
+                viewBox="0 0 20 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <Path
+                  d="M10.4688 3.45166C12.5522 1.28685 14.7619 1.07678 16.417 1.8335C18.1132 2.60915 19.3496 4.45037 19.3496 6.63818C19.3495 8.86618 18.4368 10.5825 17.1367 12.0464C15.8144 13.5353 14.1456 14.7097 12.6357 15.8989L12.6348 15.8999C12.1102 16.3143 11.6358 16.6834 11.1768 16.9517C10.7175 17.22 10.335 17.3501 10 17.3501C9.66507 17.3501 9.28275 17.2192 8.82324 16.9507C8.36398 16.6823 7.88927 16.3136 7.36426 15.8999H7.36328C5.85389 14.7097 4.18563 13.5343 2.86328 12.0454C1.56325 10.5815 0.650476 8.86541 0.650391 6.63721C0.650391 4.44887 1.88692 2.60779 3.58301 1.83252C5.23801 1.07622 7.44779 1.28683 9.53125 3.45166L10 3.93799L10.4688 3.45166Z"
+                  stroke={isSaved ? 'none' : '#3C9D8D'}
+                  fill={isSaved ? '#3C9D8D' : 'none'}
+                  strokeWidth="1.3"
+                />
+              </Svg>
+            </TouchableOpacity>
+          </View>
+        )}
+        {isLoading && <ActivityIndicator size={30} animating={isLoading} color="#227099" />}
+      </View>
+
+      {showNote && isSaved && (
+        <FormField
+          value={note}
+          handleChangeText={(val) => setNote(val)}
+          placeholder="write your notes..."
+        />
+      )}
+    </View>
+  );
+};
+
+export default function SearchScreen() {
+  const [debounceSearch, setDebounceSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState(false)
+  const [imgUrl, setImgUrl] = useState('');
+
+  const router = useRouter();
+  const {
+    searchedDrugData,
+    setSearchedDrugData,
+    handleAdd,
+    handleRemove,
+    getNearestPharmacy,
+    drugList,
+    savedMeds,
+    getSavedMeds,
+    location,
+    setSearchData,
+    setDrugList
+  } = useContext(SearchContext);
+
+  const debounce = useDebouncedCallback((val) => {
+    setDebounceSearch(val);
+  }, 300);
+
+  const handleGetMedicine = async () => {
+    try {
+      setIsLoading(true);
+      const response = await api.get(`drug/fillter?query=${debounceSearch}&fillterType=1`);
+
+      setSearchedDrugData(response.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openCamera = async () => {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        alert("Camera permission is required to use this feature.");
+        return;
+      }
+  
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+  
+      setFile({"uri":result.assets[0].uri, "mimeType":result.assets[0].mimeType, "name":result.assets[0].fileName})
+
+      if (!result.canceled) {
+        console.log("Image URI:", result.assets[0].uri);
+      }
+    };
+  
+    const openDocumentPicker = async () => {
+      const result = await DocumentPicker.getDocumentAsync({});
+      console.log(result)
+      if (result.canceled === false) {
+        console.log("Picked document URI:");
+        setFile(result.assets[0])
+        console.log(result.assets[0])
+      }
+    };
+
+    const sendPrescription = async () => {
+      if (!file) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      let img = '';
+      let type = 0;
+
+      let formData = new FormData();
+      formData.append("Prescription", {
+        uri: file.uri,
+        type: file.mimeType,
+        name: file.name,
+      });
+      
+      try {
+        setIsLoading(true);
+        let response = await fetch(`${transcripeUrl}/pharmacy/prescription`, {
+          method: "POST",
+          body: formData,
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        let result = await response.json();
+        console.log(result, "result");
+        setImgUrl(result.prescriptionUrl);
+        img= result.prescriptionUrl;
+        type = 2
+
+        response = await fetch(`${streamBaseUrl}/prescription`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            url: img,
+            type: type
+          })
+        });
+
+        result = await response.json();
+        console.log(result, "result");
+        
+        let matchedDrugs = result.Matched_Drugs;
+        console.log(matchedDrugs?.join(";"), "matchedDrugs");
+        
+        const mainReq = await api.post('/drug/neareast/prescription', {
+            PrescriptionInfo: matchedDrugs,
+            Latitude: location?.latitude,
+            Longitude: location?.longitude
+          });
+        const nearestPharmacies = mainReq.data;
+        setSearchData(nearestPharmacies.data)
+        setSearchedDrugData(nearestPharmacies.drugs)
+        setDrugList(nearestPharmacies.drugs)
+        console.log(nearestPharmacies, "nearestPharmacies");
+        setFile(false); // Reset file after sending
+        // alert("Prescription sent successfully!");
+      } catch (error) {
+        console.error(error);
+        alert("Failed to send prescription.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  const handleSaveMed = async (id, note) => {
+    try {
+      const response = await api.post('saved-medicines', {
+        DrugID: id,
+        Notes: note,
+      });
+
+      await getSavedMeds();
+    } catch (error) {
+      console.error('Failed to save medicine:', error?.response?.data || error.message);
+      // Optionally show error toast/message
+    }
+  };
+
+  useEffect(() => {
+    if (debounceSearch) {
+      handleGetMedicine();
+    }
+  }, [debounceSearch]);
+
+  useEffect(() => {
+    if (file) {
+      sendPrescription()
+    }
+  }, [file]);
+
+  return (
+    <View className="flex-1 bg-white p-4">
+      <View className="mb-4 flex-row items-center gap-5">
+        <TouchableOpacity onPress={() => router.back()}>
+          <Svg
+            width="20"
+            height="20"
+            viewBox="0 0 25 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <Path
+              d="M16.81 3L7.5 12.31L16.81 21.62"
+              stroke="#595959"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </Svg>
+        </TouchableOpacity>
+        <View className="flex-1">
+          <SearchInput
+            onChange={(value) => {
+              debounce(value);
+            }}
+            handleSubmit={handleGetMedicine}
+          />
+        </View>
+        <TouchableOpacity onPress={openCamera} style={styles.iconContainer}>
+          <MaterialIcons name="photo-camera" size={24} color="#3C9D8D" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={openDocumentPicker} style={styles.iconContainer}>
+          <MaterialIcons name="attach-file" size={24} color="#3C9D8D" />
+        </TouchableOpacity>
+      </View>
+
+      {!isLoading && (
+        <View className="flex-1">
+          {/* {searchedDrugData.length === 0 && (
+            <Text className="font-tmedium text-xl text-secndryText">Recent</Text>
+          )} */}
+
+          {drugList.length > 0 && (
+            <View className="my-2 gap-5">
+              <View className="flex-row items-center justify-between">
+                <Text className="font-tmedium text-2xl text-secndryText">
+                  Search pharmacies with :
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    getNearestPharmacy();
+                    router.navigate('/');
+                  }}
+                  className="rounded-md bg-mainText p-2">
+                  <Text className="font-tregular text-white">Find pahrmacies</Text>
+                </TouchableOpacity>
+              </View>
+              <View className="flex-row flex-wrap items-center gap-3">
+                {drugList.map((drug) => {
+                  console.log(drug, "drugList");
+                  
+                  return (
+                    <TouchableOpacity
+                      key={drug.ID}
+                      className="rounded-full bg-mainText px-4 py-2"
+                      onPress={() => handleRemove(drug)}>
+                      <Text className="text-white">{drug.DrugNameEN}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+
+          {searchedDrugData.length > 0 && (
+            <FlatList
+              data={searchedDrugData}
+              keyExtractor={(item) => item.ID}
+              renderItem={({ item, index }) => (
+                <MedItem
+                  item={item}
+                  index={index}
+                  size={searchedDrugData.length}
+                  handleAdd={handleAdd}
+                  drugList={drugList}
+                  handleSave={handleSaveMed}
+                  savedMeds={savedMeds}
+                />
+              )}
+            />
           )}
         </View>
+      )}
 
-        <Text style={styles.sectionTitle3}>Search by Manufacturer</Text>
-        <View style={styles.rowWrap3}>
-          {[
-            {
-              name: 'Popular Medications',
-              description: 'Painkillers, cold medicine, allergy medicine',
-              img: require('../../assets/images/baby.png'),
-            },
-            {
-              name: 'Baby Products',
-              description: 'Diapers, wipes, baby lotion',
-              img: require('../../assets/images/baby.png'),
-            },
-            {
-              name: 'Personal Care',
-              description: 'Shampoo, soap, toothpaste',
-              img: require('../../assets/images/default.jpg'),
-            },
-          ].map((item, index) => (
-            <TouchableOpacity key={index} style={styles.manufacturerCardNew}>
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.subtitle}>{item.description}</Text>
-              </View>
-              <Image source={item.img} style={styles.cardImageNew} />
-            </TouchableOpacity>
-          ))}
+      {isLoading && (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator animating={isLoading} size={80} color="#227099" />
         </View>
-      </ScrollView>
+      )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#E4EFEF',
-    paddingTop: 50,
-    paddingHorizontal: 10,
-  },
-  arrow: {
-    marginBottom: -40,
-    marginLeft: 1,
-  },
-  searchBar: {
-    backgroundColor: 'white',
-    borderRadius: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: -10,
-    marginBottom: 20,
-    marginLeft: 30,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14.5,
-    color: '#000',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginVertical: 10,
-    top: -15,
-    color: '#24828D',
-  },
-  sectionTitle3: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginVertical: 10,
-    color: '#24828D',
-  },
-  rowWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginTop: -13,
-  },
-  rowWrap3: {
-    flexWrap: 'wrap',
-  },
-  categoryBtn: {
-    backgroundColor: 'white',
-    paddingVertical: 20,
-    paddingHorizontal: 11,
-    borderRadius: 10,
-    marginBottom: 11,
-    width: '48%',
-  },
-  categoryText: {
-    fontSize: 14.3,
-    color: '#24828D',
-    top: 3,
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  ingredientBtn: {
-    backgroundColor: 'white',
-    paddingVertical: 30,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginTop: 10,
-    width: '30%',
-  },
-  ingredientText: {
-    fontSize: 14.3,
-    textAlign: 'center',
-    color: '#24828D',
-    fontWeight: '500',
-  },
-  manufacturerCardNew: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    marginBottom: 16,
-  },
-  textContainer: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#24828D',
-  },
-  subtitle: {
-    fontSize: 13,
-    color: '#6B7B8C',
-    marginTop: 4,
-  },
-  cardImageNew: {
-    width: 60,
-    height: 60,
-    borderRadius: 12,
-  },
-
-  bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    height: 75,
-    width: '100%',
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    elevation: 8,
-    paddingHorizontal: 15,
-  },
-  navItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    position: 'relative',
-  },
-  searchButton: {
-    position: 'absolute',
-    top: -30,
-    backgroundColor: '#24828D',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 6,
-  },
-  badge: {
-    position: 'absolute',
-    top: -3,
-    right: 12,
-    backgroundColor: 'red',
-    borderRadius: 10,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-  },
-  badgeText: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-});

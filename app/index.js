@@ -1,114 +1,157 @@
 /* eslint-disable prettier/prettier */
-import * as Location from 'expo-location';
-import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useContext, useEffect, useState, useRef } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
-import { HeaderBar, BottomBar } from '../components';
-import { useGlobalContext } from '../context/GlobalProvider';
-import api from '../utilities/api';
+import { HeaderBar, BottomBar, Loader } from '../components';
+import { SearchContext } from '../context/SearchContext';
+
+const { width } = Dimensions.get('window');
+
+function formatDistance(meters) {
+  if (meters < 1000) {
+    return Math.round(meters) + ' m';
+  } else {
+    return (meters / 1000).toFixed(1) + ' km';
+  }
+}
+import { usePathname } from 'expo-router';
 
 export default function HomeScreen() {
-  const [data, setData] = useState([]);
-  const [location, setLocation] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { isLoading, location, searchData, setLocation, setPharmacy } = useContext(SearchContext);
+  const pathname = usePathname() 
+  const router = useRouter();
+
+  const mapRef = useRef(null);
+  const markerRefs = useRef({});
+
+  const hasLocationSetted = useRef(false);
+  const [selectedPharmacy, setSelectedPharmacy] = useState(null);
 
   useEffect(() => {
-    const getLocation = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          Alert.alert('Permission Denied', 'Location permission is required to use this feature.');
-          setLoading(false);
-          return;
-        }
-
-        const loc = await Location.getCurrentPositionAsync({});
-        setLocation(loc.coords);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to get location.');
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getLocation();
-  }, []);
-
-  const getNearestPharmacy = async () => {
-    if (!location) {
-      console.error('Location is not available');
-      return;
-    }
-
-    try {
-      const req = await api.get(
-        `pharmacy/nearest?Longitude=${location.longitude}&Latitude=${location.latitude}`
+    if (location?.latitude && location?.longitude && mapRef.current && !hasLocationSetted.current) {
+      mapRef.current.animateToRegion(
+        {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: location.latitudeDelta || 0.02,
+          longitudeDelta: location.longitudeDelta || 0.02,
+        },
+        500
       );
-
-      const res = req.data.data;
-      setData(res);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (location) {
-      getNearestPharmacy();
+      hasLocationSetted.current = true;
     }
   }, [location]);
 
   return (
     <>
-      {loading || !location ? (
-        <></>
-      ) : (
-        <>
-          <HeaderBar />
-          <View style={styles.container}>
-            <MapView
-              provider={PROVIDER_GOOGLE}
-              style={styles.map}
-              initialRegion={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              showsUserLocation
-              showsMyLocationButton
-              loadingEnabled
-              loadingIndicatorColor="#666666"
-              loadingBackgroundColor="#eeeeee"
-              onRegionChangeComplete={(region) =>
-                setLocation({
-                  latitude: region.latitude,
-                  longitude: region.longitude,
-                })
-              }>
-              {data.map((item) => (
-                <Marker
-                  key={item.ID}
-                  pinColor="#FF6347"
-                  coordinate={{
-                    latitude: item.Longitude,
-                    longitude: item.Latitude,
-                  }}
-                  title={item.PharmacyName}
-                  description={item.description}
-                />
-              ))}
-            </MapView>
+      <HeaderBar />
+      {!isLoading && (
+        <View style={styles.container}>
+          <MapView
+            ref={mapRef}
+            provider={PROVIDER_GOOGLE}
+            style={styles.map}
+            initialRegion={{
+              latitude: location?.latitude || 30.0444,
+              longitude: location?.longitude || 31.2357,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            showsUserLocation
+            showsMyLocationButton
+            loadingEnabled
+            // onRegionChangeComplete={(region) =>
+            //   setLocation({
+            //     latitude: region.latitude,
+            //     longitude: region.longitude,
+            //     latitudeDelta: region.latitudeDelta,
+            //     longitudeDelta: region.longitudeDelta,
+            //   })
+            // }
+          >
+            {searchData.map((item) => (
+              <Marker
+                key={`${item.PharmacyID}_${item.Latitude}_${item.Longitude}_${item.PharmacyName}_${new Date().getTime()}`}
+                ref={(ref) => {
+                  if (ref) markerRefs.current[item.PharmacyID] = ref;
+                }}
+                pinColor={selectedPharmacy?.PharmacyID === item.PharmacyID ? '#288B96' : '#FF6347'}
+                coordinate={{
+                  latitude: item.Latitude,
+                  longitude: item.Longitude,
+                }}
+                onPress={() => setSelectedPharmacy(item)}
+                title={item.PharmacyName}
+              />
+            ))}
+          </MapView>
 
-            <TouchableOpacity style={styles.assistantButton}>
-              <Text style={styles.assistantText}>Chat Assistant</Text>
-            </TouchableOpacity>
+          <View className="absolute  top-10 z-10 h-[450px]  w-[200px] overflow-auto rounded-br-2xl rounded-tr-2xl bg-white p-3 shadow-lg">
+            <Text className="mb-3 text-lg font-bold text-mainText">Pharmacies</Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {searchData.map((pharmacy) => (
+                <TouchableOpacity
+                  key={pharmacy.PharmacyID}
+                  className="mb-3 gap-2  rounded-lg p-2"
+                  onPress={() => {
+                    setSelectedPharmacy(pharmacy);
+                    mapRef.current?.animateToRegion({
+                      latitude: pharmacy.Latitude,
+                      longitude: pharmacy.Longitude,
+                      latitudeDelta: 0.01,
+                      longitudeDelta: 0.01,
+                    });
+
+                    markerRefs.current[pharmacy.PharmacyID]?.showCallout();
+                  }}>
+                  <Text className="font-tmedium text-sm text-secndryText">
+                    {pharmacy.PharmacyName}
+                  </Text>
+
+                  <Text className="font-tregular text-xs text-secndryText">{`${pharmacy.MatchedDrugNames} matches`}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
-          <BottomBar />
-        </>
+
+          {selectedPharmacy && (
+            <View style={styles.popup}>
+              <Text className="font-tbold text-lg">{selectedPharmacy.PharmacyName}</Text>
+              <Text className="mt-4 font-tregular text-secndryText">
+                {selectedPharmacy.Address || 'No address available'}
+              </Text>
+
+              <Text className="mt-2 font-tregular text-secndryText">
+                {formatDistance(selectedPharmacy.DistanceFromSearchPoint)}
+              </Text>
+              <View className="flex-row items-center justify-end gap-3">
+                <TouchableOpacity
+                  className="rounded-lg bg-[#999] px-4 py-2"
+                  onPress={() => setSelectedPharmacy(null)}>
+                  <Text className="font-tbold text-white">Close</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  className="rounded-lg bg-mainText px-4 py-2"
+                  onPress={() => {
+                    setPharmacy(selectedPharmacy);
+                    setSelectedPharmacy(null);
+                    router.navigate('/PharmacyDetails');
+                  }}>
+                  <Text className="font-tbold text-white">View</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+
+          {}
+        </View>
       )}
+      <Loader isLoading={isLoading} />
+      {pathname}
+      <BottomBar />
     </>
   );
 }
@@ -121,18 +164,18 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  assistantButton: {
+  popup: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 110,
+    left: 20,
     right: 20,
-    backgroundColor: '#FF6347',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    elevation: 4,
-  },
-  assistantText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 8,
   },
 });

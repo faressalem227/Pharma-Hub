@@ -1,13 +1,17 @@
 /* eslint-disable prettier/prettier */
 
 import { useFonts } from 'expo-font';
+import * as Location from 'expo-location';
+import * as Notifications from 'expo-notifications';
 import { router, SplashScreen, Slot } from 'expo-router';
 import { useEffect } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import GlobalProvider from '../context/GlobalProvider';
 
 import '../global.css';
+import SearchContextProvider from '../context/SearchContext';
 import '@react-native-firebase/app';
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance } from '@notifee/react-native';
@@ -96,14 +100,36 @@ const RootStack = () => {
     }
   }, [fontsLoaded, fontError]);
 
+  useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+      }),
+    });
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'Medicine Reminders',
+        importance: Notifications.AndroidImportance.HIGH,
+        sound: 'default',
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#3C9D8D',
+      });
+    }
+  }, []);
+
   if (!fontsLoaded && !fontError) return null;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff', paddingTop: insets.top }}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
       <GlobalProvider>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
-        <Slot />
+        <SearchContextProvider>
+          <StatusBar backgroundColor="white" barStyle="dark-content" />
+          <Slot />
+        </SearchContextProvider>
       </GlobalProvider>
     </SafeAreaView>
   );

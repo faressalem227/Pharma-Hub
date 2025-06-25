@@ -36,7 +36,6 @@ const AllergiesScreen = () => {
   const [userAllergies, setUserAllergies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState(null);
-  const [counter, setCounter] = useState(0);
 
   const getActiveSubstanceData = async () => {
     try {
@@ -69,7 +68,7 @@ const AllergiesScreen = () => {
         ActiveSubstanceID: selectedValue,
       });
 
-      setCounter((prev) => prev + 1);
+      getUserAllergies();
       setSelectedValue(null);
     } catch (error) {
       console.error(error);
@@ -89,22 +88,18 @@ const AllergiesScreen = () => {
             textAlign: 'left',
           },
         });
+
+        getUserAllergies();
       }
-      setCounter((prev) => prev + 1);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    getUserAllergies();
-  }, [counter]);
-
-  useEffect(() => {
     getActiveSubstanceData();
+    getUserAllergies();
   }, []);
-
-  console.log(selectedValue);
 
   return (
     <>

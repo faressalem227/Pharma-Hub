@@ -48,7 +48,12 @@
           "apiKey": "AIzaSyD2ocIaSbrcep_fThJSREmAQVqmiO_NxGk"
         }
       },
-      "package": "com.amrkhaled222.Pharma"
+      "package": "com.amrkhaled222.Pharma",
+
+      "notification": {
+        "icon": "./assets/notification-icon.png",
+        "color": "#3C9D8D"
+      }
     }
   }
 }

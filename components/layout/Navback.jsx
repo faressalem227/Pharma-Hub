@@ -3,11 +3,15 @@ import { useRouter } from 'expo-router';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-const Navback = ({ title }) => {
+const Navback = ({ title, onNavigate, children }) => {
   const router = useRouter();
   return (
-    <View className="flex-1 flex-row items-center gap-1">
-      <TouchableOpacity onPress={() => router.back()}>
+    <View className="flex-1 flex-row items-center gap-2">
+      <TouchableOpacity
+        onPress={() => {
+          if (onNavigate) onNavigate();
+          router.back();
+        }}>
         <Svg
           width="20"
           height="20"
@@ -23,7 +27,8 @@ const Navback = ({ title }) => {
           />
         </Svg>
       </TouchableOpacity>
-      <Text className="text-2xl font-bold text-secndryText">{title}</Text>
+      {title && <Text className="text-2xl font-bold text-secndryText">{title}</Text>}
+      {children}
     </View>
   );
 };

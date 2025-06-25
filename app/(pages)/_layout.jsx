@@ -1,14 +1,17 @@
 /* eslint-disable prettier/prettier */
-import { Slot } from 'expo-router';
+import { Slot, usePathname } from 'expo-router';
 import { View } from 'react-native';
 
 import { BottomBar } from '../../components';
 
 export default function Layout() {
+  const pathname = usePathname();
+
+  const hideBottomBar = pathname === '/SplashRScreen'  || pathname === '/Login' || pathname === '/Register' || pathname === '/Model';
   return (
     <View style={{ flex: 1 }}>
       <Slot />
-      <BottomBar />
+      {!hideBottomBar && <BottomBar />}
     </View>
   );
 }

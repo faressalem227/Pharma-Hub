@@ -1,84 +1,59 @@
-import React, { useState, useRef } from "react";
-import {
-	View,
-	TextInput,
-	StyleSheet,
-	TouchableOpacity,
-	Image,
-} from "react-native";
+/* eslint-disable prettier/prettier */
+import React, { useState, useRef } from 'react';
+import { View, TextInput, TouchableOpacity } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 
-const DarkBlue = "#0047ab"; // Assuming this is the color you want to use
+const SearchInput = ({ handleSubmit, onChange, value }) => {
+  const [searchText, setSearchText] = useState('');
+  const inputRef = useRef(null);
 
-const SearchInput = ({ setQuery }) => {
-	const [searchText, setSearchText] = useState("");
-	const inputRef = useRef(null);
+  const activateSearchInput = () => {
+    inputRef.current.focus();
+  };
 
-	const handleSearch = () => {
-		// Add your search logic here
-		setQuery(searchText);
-	};
-
-	const activateSearchInput = () => {
-		inputRef.current.focus();
-	};
-
-	return (
-		<View
-			style={styles.container}
-			className="mx-auto my-4">
-			<TextInput
-				ref={inputRef}
-				style={styles.input}
-				placeholder="بحث عن الاصناف المخزنيه"
-				value={searchText}
-				onChangeText={setSearchText}
-				placeholderTextColor="#999"
-				underlineColorAndroid="transparent"
-				returnKeyType="search"
-				onSubmitEditing={handleSearch}
-			/>
-			<TouchableOpacity
-				style={styles.iconButton}
-				onPress={activateSearchInput}>
-				<Image
-					className="my-6 w-4 h-4"
-					resizeMethod="cover"
-					source={require("../../assets/images/MagnifyingGlass.png")}
-					style={styles.searchIcon}
-				/>
-			</TouchableOpacity>
-		</View>
-	);
+  return (
+    <View className="flex-row items-center gap-2 rounded-full border border-secndryText px-5">
+      <TouchableOpacity onPress={activateSearchInput}>
+        <Svg
+          width="18"
+          height="18"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <Path
+            d="M7.25 12.5C10.1495 12.5 12.5 10.1495 12.5 7.25C12.5 4.35051 10.1495 2 7.25 2C4.35051 2 2 4.35051 2 7.25C2 10.1495 4.35051 12.5 7.25 12.5Z"
+            stroke="#313144"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <Path
+            d="M10.9622 10.9624L13.9997 13.9999"
+            stroke="#313144"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Svg>
+      </TouchableOpacity>
+      <TextInput
+        style={{
+          flex: 1,
+        }}
+        ref={inputRef}
+        placeholder="Search"
+        value={value || searchText || ''}
+        onChangeText={(value) => {
+          setSearchText(value);
+          if (onChange) onChange(value);
+        }}
+        placeholderTextColor="#C8C8C8"
+        underlineColorAndroid="transparent"
+        returnKeyType="search"
+        onSubmitEditing={handleSubmit}
+      />
+    </View>
+  );
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flexDirection: "row",
-		alignItems: "center",
-		borderWidth: 0.5,
-		borderColor: "#1C5B7D",
-		borderRadius: 10,
-		paddingVertical: 10,
-		paddingHorizontal: 20,
-		height: 56,
-		direction: "rtl",
-		width: "90%",
-	},
-	input: {
-		flex: 1,
-		fontSize: 14,
-		height: 56,
-	},
-	iconButton: {},
-	searchIcon: {
-		marginLeft: 10,
-
-		// position:"absolute",
-		width: 22,
-		height: 22,
-		// right:"7%",
-		// padding:4,
-	},
-});
 
 export default SearchInput;
