@@ -6,7 +6,7 @@
     "icon": "./assets/images/pharmaLogo.png",
     "scheme": "pharma",
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/images/favicon.png",
       "bundler": "metro"
     },
     "experiments": {
@@ -35,15 +35,16 @@
     },
     "assetBundlePatterns": ["assets/*", "!assets/splash.png"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": "./assets/images/pharmaLogo.png"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
+      "icon": "./assets/images/pharmaLogo.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "icon": "./assets/images/pharmaLogo.png",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyD2ocIaSbrcep_fThJSREmAQVqmiO_NxGk"
