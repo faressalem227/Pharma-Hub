@@ -15,10 +15,9 @@ export const socket = io(WebSocketServer, {
 export default function Layout() {
   console.log(WebSocketServer);
   const router = useRouter();
-  const {
-    user: { id },
-  } = useGlobalContext();
+  const { user } = useGlobalContext();
 
+  const id = user?.id;
   useEffect(() => {
     socket.emit(
       'register',

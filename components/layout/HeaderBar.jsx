@@ -10,7 +10,7 @@ const HeaderBar = () => {
 
   const router = useRouter();
   return (
-    <View className="box-border bg-white px-5 py-3">
+    <View className="box-border bg-white px-5   " style={{ paddingVertical: isLogged ? 12 : 20 }}>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-5">
           <View className="h-6 w-6 rounded-full bg-white">
@@ -61,7 +61,11 @@ const HeaderBar = () => {
           </Text>
         </View>
 
-        <View className="gap- flex-row items-center">
+        <View
+          className="flex-row  items-center gap-2"
+          style={{
+            display: isLogged ? 'flex' : 'none',
+          }}>
           <TouchableOpacity
             className="pt-4"
             onPress={() => {
