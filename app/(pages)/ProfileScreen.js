@@ -5,7 +5,6 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState, useContext } from 'react';
 import { View, Text, Image, Switch, TouchableOpacity } from 'react-native';
 import Svg, { Path, G, Defs, ClipPath, Rect } from 'react-native-svg';
-
 import { Navback, Loader } from '../../components';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { SearchContext } from '../../context/SearchContext';
@@ -34,14 +33,20 @@ export default function ProfileScreen() {
   const pickImage = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
+        presentationStyle: 'popover',
       });
 
       if (!result.canceled) {
-        setImage(result.assets[0].uri); // Store the image URI
+        const img = {
+          uri: result.assets[0].uri,
+          name: result.assets[0].fileName || result.assets[0].uri.split('/').pop(),
+          type: result.assets[0].mimeType || 'image/jpeg',
+        };
+        setImage(img);
+        console.log(img, 'state image');
       }
     } catch (error) {
       console.error('Error picking image:', error);
@@ -53,11 +58,13 @@ export default function ProfileScreen() {
 
     const formData = new FormData();
 
+    console.log(image, 'image');
     // Append the image as a file
-    formData.append('image', image);
-
-    console.log(formData);
-
+    formData.append('image', {
+      uri: image.uri,
+      name: image.name,
+      type: image.type,
+    });
     try {
       setIsLoading(true);
       const response = await api.post('auth/image-upload', formData, {
@@ -66,16 +73,14 @@ export default function ProfileScreen() {
         },
       });
 
-      console.log('respnse image', response.data);
-
-      await SecureStore.setItemAsync('userImage', JSON.stringify(response.data.imageUrl || ''));
+      await SecureStore.setItemAsync('userImage', JSON.stringify(response?.data?.imageUrl || ''));
 
       setUser((prev) => ({
         ...prev,
-        userImage: response.data.imageUrl,
+        userImage: response?.data?.imageUrl,
       }));
 
-      console.log('Upload success:', response.data);
+      console.log('Upload success:', response?.data);
     } catch (error) {
       console.error('Upload failed:', error.response?.data || error.message);
     } finally {
@@ -84,12 +89,14 @@ export default function ProfileScreen() {
   };
 
   useEffect(() => {
-    (async () => {
+    const initializePermissions = async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         alert('Permission to access media library is required!');
       }
-    })();
+    };
+
+    initializePermissions();
   }, []);
 
   useEffect(() => {
@@ -200,7 +207,7 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
 
-                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedPharmacies.length} Pharmacies`}</Text>
+                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedPharmacies?.length} Pharmacies`}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -220,7 +227,7 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
 
-                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedMeds.length} Medicines`}</Text>
+                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedMeds?.length} Medicines`}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -258,7 +265,7 @@ export default function ProfileScreen() {
                 <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${11} Notifications`}</Text>
               </TouchableOpacity>
 
-              <View className="flex-row items-center justify-between border-b border-b-borderGray pb-1">
+              {/* <View className="flex-row items-center justify-between border-b border-b-borderGray pb-1">
                 <View className="flex-row items-center gap-2">
                   <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <Defs>
@@ -278,7 +285,7 @@ export default function ProfileScreen() {
                 </View>
 
                 <Switch />
-              </View>
+              </View> */}
 
               <View className="flex-row items-center justify-between pb-3">
                 <View className="flex-row items-center gap-2">

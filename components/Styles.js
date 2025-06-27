@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -73,6 +73,9 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     flexDirection: 'row',
+    textAlign: 'auto',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: 10,
   },
   userMessage: {
@@ -90,8 +93,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   messageText: {
-    maxWidth: '80%',
+    maxWidth: '85%',
+    textAlign: 'auto',
     padding: 10,
+    width: Dimensions.get('screen').width - 150,
     borderRadius: 20,
     backgroundColor: '#F0F0F0',
   },
@@ -164,15 +169,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 8,
+    borderRadius: 16,
     marginBottom: 16,
+    padding: 8,
   },
-  iconContainer: {
-    padding: 5,
-  },
+  // iconContainer: {
+  //   padding: 5,
+  // },
   input: {
     flex: 1,
-    height: 48,
+    height: 40,
     paddingHorizontal: 12,
     alignItems: 'center',
     color: '#333',

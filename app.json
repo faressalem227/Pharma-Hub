@@ -6,7 +6,7 @@
     "icon": "./assets/images/pharmaLogo.png",
     "scheme": "pharma",
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/images/favicon.png",
       "bundler": "metro"
     },
     "experiments": {
@@ -35,12 +35,14 @@
     },
     "assetBundlePatterns": ["assets/*", "!assets/splash.png"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": "./assets/images/pharmaLogo.png"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
+      "icon": "./assets/images/pharmaLogo.png",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/pharmaLogo.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "config": {

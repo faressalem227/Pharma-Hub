@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
   },
   RightImage: {
     width: 35,
+    objectFit: 'cover',
+    resizeMode: 'cover',
     height: 35,
   },
 });

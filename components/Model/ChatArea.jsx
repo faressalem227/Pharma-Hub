@@ -12,6 +12,7 @@ import {
   Clipboard,
   Alert,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import EventSource from 'react-native-event-source';
 import Markdown from 'react-native-markdown-display';
@@ -165,6 +166,12 @@ const ChatArea = ({
     }
   };
 
+  function adjustTextAlignment(text) {
+    const rtlChar = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+    const alignment = rtlChar.test(text) ? 'right' : 'left';
+    return alignment;
+  }
+
   useEffect(
     () => {
       return () => {
@@ -207,7 +214,15 @@ const ChatArea = ({
             <View style={styles.iconContainer}>
               <Ionicons name="person-circle-outline" size={24} color="#3C9D8D" />
             </View>
-            <Text style={[styles.messageText, { color: '#FFFFFF', backgroundColor: '#3C9D8D' }]}>
+            <Text
+              style={[
+                styles.messageText,
+                {
+                  color: '#FFFFFF',
+                  backgroundColor: '#3C9D8D',
+                  textAlign: adjustTextAlignment(item.text),
+                },
+              ]}>
               <Markdown style={{ body: { fontSize: 16, color: '#FFFFFF' } }}>{item.text}</Markdown>
             </Text>
             <TouchableOpacity onPress={() => handleTextCopy(item.text)}>
@@ -228,7 +243,11 @@ const ChatArea = ({
           <View
             style={[styles.messageContainer, { alignSelf: 'flex-start', flexDirection: 'row' }]}>
             <MaterialIcons name="smart-toy" size={24} color="#3C9D8D" />
-            <Text style={[styles.messageText, { color: '#FFFFFF' }]}>
+            <Text
+              style={[
+                styles.messageText,
+                { color: '#FFFFFF', textAlign: adjustTextAlignment(item.text) },
+              ]}>
               <Markdown style={{ body: { fontSize: 16, color: '#000' } }}>{item.text}</Markdown>
             </Text>
             <TouchableOpacity onPress={() => handleTextCopy(item.text)}>
