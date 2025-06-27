@@ -5,23 +5,21 @@ import { View } from 'react-native';
 import { io } from 'socket.io-client';
 
 import { useGlobalContext } from '../../context/GlobalProvider';
-import { API_BASE_URL } from '../../utilities/api';
+import { WebSocketServer } from '../../utilities/api';
 
-export const socket = io(API_BASE_URL?.split('/api')?.[0], {
+export const socket = io(WebSocketServer, {
   transports: ['websocket'],
   autoConnect: true,
 });
 
 export default function Layout() {
-  console.log(API_BASE_URL?.split('/api')?.[0], 'test');
+  console.log(WebSocketServer);
   const router = useRouter();
   const {
     user: { id },
   } = useGlobalContext();
 
-  console.log(id);
   useEffect(() => {
-    console.log('chat layout');
     socket.emit(
       'register',
       {

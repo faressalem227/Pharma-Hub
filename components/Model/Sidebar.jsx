@@ -11,14 +11,14 @@ import styles from '../Styles';
 
 const Sidebar = ({ isVisible, onClose }) => {
   const router = useRouter();
-  const { user, isLogged } = useGlobalContext();
+  const { user, isLogged, logOut } = useGlobalContext();
 
   // Function to handle logout
   const handleLogout = async () => {
     onClose();
     //setIsLogged(false)
     //setUser(null)
-    console.log('User logged out');
+    await logOut();
     router.replace('/');
   };
 
@@ -30,10 +30,21 @@ const Sidebar = ({ isVisible, onClose }) => {
           <Text style={styles.username}>{isLogged ? user?.username : 'Guest'}</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Ionicons name="log-out-outline" size={24} color="#3C9D8D" />
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+      {isLogged ? (
+        <>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color="#3C9D8D" />
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <TouchableOpacity style={styles.logoutButton} onPress={() => router.push('/Signin')}>
+            <Ionicons name="log-in-outline" size={24} color="#3C9D8D" />
+            <Text style={styles.logoutButtonText}>Sign In</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 };

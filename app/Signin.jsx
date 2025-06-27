@@ -5,8 +5,8 @@ import { View, Text, ScrollView, I18nManager, TouchableOpacity } from 'react-nat
 import Svg, { Path } from 'react-native-svg';
 import Toast from 'react-native-toast-message';
 
-import '@react-native-firebase/app';
-import messaging from '@react-native-firebase/messaging';
+// import '@react-native-firebase/app';
+// import messaging from '@react-native-firebase/messaging';
 import { MainButton, FormField, LogoBar, Loader } from '../components';
 import { icons } from '../constants';
 import { useGlobalContext } from '../context/GlobalProvider';
@@ -24,29 +24,29 @@ const Signin = () => {
   });
   const router = useRouter();
 
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission({
-      alert: true,
-      sound: true,
-      badge: true,
-    });
+  // async function requestUserPermission() {
+  //   const authStatus = await messaging().requestPermission({
+  //     alert: true,
+  //     sound: true,
+  //     badge: true,
+  //   });
 
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  //   const enabled =
+  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    console.log('Notification permission status:', authStatus);
-    return enabled;
-  }
+  //   console.log('Notification permission status:', authStatus);
+  //   return enabled;
+  // }
 
-  const getFcmToken = async () => {
-    const permession = await requestUserPermission();
-    await messaging().registerDeviceForRemoteMessages();
+  // const getFcmToken = async () => {
+  //   const permession = await requestUserPermission();
+  //   await messaging().registerDeviceForRemoteMessages();
 
-    const token = await messaging().getToken();
-    console.log('FCM Token:', token);
-    return permession ? token : null;
-  };
+  //   const token = await messaging().getToken();
+  //   console.log('FCM Token:', token);
+  //   return permession ? token : null;
+  // };
   const submit = async () => {
     if (form.email === '' || form.password === '') {
       Toast.show({
@@ -66,7 +66,8 @@ const Signin = () => {
     }
     try {
       setSubmitting(true);
-      const fcmToken = await getFcmToken();
+      const fcmToken = null;
+      //await getFcmToken();
       const response = await login(form.email, form.password, fcmToken); //fcmToken
       if (response) {
         Toast.show({

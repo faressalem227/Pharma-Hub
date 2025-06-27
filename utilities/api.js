@@ -1,19 +1,11 @@
 /* eslint-disable prettier/prettier */
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-
-// Define your API base URL
-
-// export const REPORT_SERVER_URL = 'http://196.219.138.210:5007/api';
-
-// const API_BASE_URL = 'http://192.168.1.25:8080/api/';
-
-export const API_BASE_URL = 'https://pharmahub.duckdns.org/api/api/';
-// export const API_BASE_URL = 'http://192.168.1.21:8080/api/';
+export const API_BASE_URL = 'http://192.168.1.20:8080/api/';
+// export const API_BASE_URL = 'https://pharmahub.duckdns.org/api/api/';
 export const transcripeUrl = 'https://pharmahub.duckdns.org/api/api/';
 export const streamBaseUrl = 'https://pharmahub.duckdns.org/ai/';
-export const sqlUrl = 'https://pharmahub.duckdns.org/api/api/';
-
+export const WebSocketServer = 'https://pharmahub.duckdns.org/api/';
 const api = axios.create({
   baseURL: API_BASE_URL,
 });

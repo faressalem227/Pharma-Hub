@@ -61,15 +61,14 @@ export default function HomeScreen() {
             showsUserLocation
             showsMyLocationButton
             loadingEnabled
-            // onRegionChangeComplete={(region) =>
-            //   setLocation({
-            //     latitude: region.latitude,
-            //     longitude: region.longitude,
-            //     latitudeDelta: region.latitudeDelta,
-            //     longitudeDelta: region.longitudeDelta,
-            //   })
-            // }
-          >
+            onRegionChangeComplete={(region) =>
+              setLocation({
+                latitude: region.latitude,
+                longitude: region.longitude,
+                latitudeDelta: region.latitudeDelta,
+                longitudeDelta: region.longitudeDelta,
+              })
+            }>
             {searchData.map((item) => (
               <Marker
                 key={item.PharmacyID}
