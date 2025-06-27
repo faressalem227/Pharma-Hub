@@ -5,10 +5,10 @@ import { View, Text, ActivityIndicator, TouchableOpacity, FlatList } from 'react
 import Svg, { Path } from 'react-native-svg';
 import { useDebouncedCallback } from 'use-debounce';
 
-import * as ImagePicker from "expo-image-picker";
-import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
 
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import { SearchInput, FormField, Loader } from '../../components';
 import { SearchContext } from '../../context/SearchContext';
@@ -18,7 +18,7 @@ import styles from '../../components/Styles';
 const MedItem = ({ item, index, size, handleAdd, handleSave, drugList = [], savedMeds = [] }) => {
   const [isLoading, setIsLoading] = useState(false);
   const isIncluded = drugList.some((drug) => drug.ID === item.ID);
-  
+
   const isSaved = savedMeds.some((drug) => drug.DrugID === item.ID);
 
   const [note, setNote] = useState('');
@@ -99,7 +99,7 @@ const MedItem = ({ item, index, size, handleAdd, handleSave, drugList = [], save
 export default function SearchScreen() {
   const [debounceSearch, setDebounceSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState(false)
+  const [file, setFile] = useState(false);
   const [imgUrl, setImgUrl] = useState('');
 
   const router = useRouter();
@@ -114,7 +114,7 @@ export default function SearchScreen() {
     getSavedMeds,
     location,
     setSearchData,
-    setDrugList
+    setDrugList,
   } = useContext(SearchContext);
 
   const debounce = useDebouncedCallback((val) => {
@@ -135,101 +135,105 @@ export default function SearchScreen() {
   };
 
   const openCamera = async () => {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== "granted") {
-        alert("Camera permission is required to use this feature.");
-        return;
-      }
-  
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-      });
-  
-      setFile({"uri":result.assets[0].uri, "mimeType":result.assets[0].mimeType, "name":result.assets[0].fileName})
-
-      if (!result.canceled) {
-        console.log("Image URI:", result.assets[0].uri);
-      }
-    };
-  
-    const openDocumentPicker = async () => {
-      const result = await DocumentPicker.getDocumentAsync({});
-      console.log(result)
-      if (result.canceled === false) {
-        console.log("Picked document URI:");
-        setFile(result.assets[0])
-        console.log(result.assets[0])
-      }
-    };
-
-    const sendPrescription = async () => {
-      if (!file) {
-        alert("Please select a file first.");
-        return;
-      }
-
-      let img = '';
-      let type = 0;
-
-      let formData = new FormData();
-      formData.append("Prescription", {
-        uri: file.uri,
-        type: file.mimeType,
-        name: file.name,
-      });
-      
-      try {
-        setIsLoading(true);
-        let response = await fetch(`${transcripeUrl}/pharmacy/prescription`, {
-          method: "POST",
-          body: formData,
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        let result = await response.json();
-        console.log(result, "result");
-        setImgUrl(result.prescriptionUrl);
-        img= result.prescriptionUrl;
-        type = 2
-
-        response = await fetch(`${streamBaseUrl}/prescription`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            url: img,
-            type: type
-          })
-        });
-
-        result = await response.json();
-        console.log(result, "result");
-        
-        let matchedDrugs = result.Matched_Drugs;
-        console.log(matchedDrugs?.join(";"), "matchedDrugs");
-        
-        const mainReq = await api.post('/drug/neareast/prescription', {
-            PrescriptionInfo: matchedDrugs,
-            Latitude: location?.latitude,
-            Longitude: location?.longitude
-          });
-        const nearestPharmacies = mainReq.data;
-        setSearchData(nearestPharmacies.data)
-        setSearchedDrugData(nearestPharmacies.drugs)
-        setDrugList(nearestPharmacies.drugs)
-        console.log(nearestPharmacies, "nearestPharmacies");
-        setFile(false); // Reset file after sending
-        // alert("Prescription sent successfully!");
-      } catch (error) {
-        console.error(error);
-        alert("Failed to send prescription.");
-      } finally {
-        setIsLoading(false);
-      }
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Camera permission is required to use this feature.');
+      return;
     }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    setFile({
+      uri: result.assets[0].uri,
+      mimeType: result.assets[0].mimeType,
+      name: result.assets[0].fileName,
+    });
+
+    if (!result.canceled) {
+      console.log('Image URI:', result.assets[0].uri);
+    }
+  };
+
+  const openDocumentPicker = async () => {
+    const result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
+    if (result.canceled === false) {
+      console.log('Picked document URI:');
+      setFile(result.assets[0]);
+      console.log(result.assets[0]);
+    }
+  };
+
+  const sendPrescription = async () => {
+    if (!file) {
+      alert('Please select a file first.');
+      return;
+    }
+
+    let img = '';
+    let type = 0;
+
+    let formData = new FormData();
+    formData.append('Prescription', {
+      uri: file.uri,
+      type: file.mimeType,
+      name: file.name,
+    });
+
+    try {
+      setIsLoading(true);
+      let response = await fetch(`${transcripeUrl}/pharmacy/prescription`, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log(response, 'response');
+      let result = await response.json();
+      console.log(result, 'result');
+      setImgUrl(result.prescriptionUrl);
+      img = result.prescriptionUrl;
+      type = 2;
+
+      response = await fetch(`${streamBaseUrl}/prescription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: img,
+          type: type,
+        }),
+      });
+      console.log(response, 'response');
+      result = await response.json();
+      console.log(result, 'result');
+
+      let matchedDrugs = result.Matched_Drugs;
+      console.log(matchedDrugs?.join(';'), 'matchedDrugs');
+
+      const mainReq = await api.post('/drug/neareast/prescription', {
+        PrescriptionInfo: matchedDrugs,
+        Latitude: location?.latitude,
+        Longitude: location?.longitude,
+      });
+      const nearestPharmacies = mainReq.data;
+      setSearchData(nearestPharmacies.data);
+      setSearchedDrugData(nearestPharmacies.drugs);
+      setDrugList(nearestPharmacies.drugs);
+      console.log(nearestPharmacies, 'nearestPharmacies');
+      setFile(false); // Reset file after sending
+      // alert("Prescription sent successfully!");
+    } catch (error) {
+      console.error(error);
+      alert('Failed to send prescription.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handleSaveMed = async (id, note) => {
     try {
       const response = await api.post('saved-medicines', {
@@ -252,7 +256,7 @@ export default function SearchScreen() {
 
   useEffect(() => {
     if (file) {
-      sendPrescription()
+      sendPrescription();
     }
   }, [file]);
 
@@ -315,8 +319,8 @@ export default function SearchScreen() {
               </View>
               <View className="flex-row flex-wrap items-center gap-3">
                 {drugList.map((drug) => {
-                  console.log(drug, "drugList");
-                  
+                  console.log(drug, 'drugList');
+
                   return (
                     <TouchableOpacity
                       key={drug.ID}

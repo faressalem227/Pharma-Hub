@@ -40,9 +40,10 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/pharmaLogo.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "icon": "./assets/images/pharmaLogo.png",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyD2ocIaSbrcep_fThJSREmAQVqmiO_NxGk"
