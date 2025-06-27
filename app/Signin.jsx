@@ -178,4 +178,5 @@ const Signin = () => {
     </ScrollView>
   );
 };
+
 export default Signin;
