@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import { useContext, useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -16,11 +16,10 @@ function formatDistance(meters) {
     return (meters / 1000).toFixed(1) + ' km';
   }
 }
-import { usePathname } from 'expo-router';
 
 export default function HomeScreen() {
   const { isLoading, location, searchData, setLocation, setPharmacy } = useContext(SearchContext);
-  const pathname = usePathname() 
+  const pathname = usePathname();
   const router = useRouter();
 
   const mapRef = useRef(null);
@@ -73,11 +72,11 @@ export default function HomeScreen() {
           >
             {searchData.map((item) => (
               <Marker
-                key={`${item.PharmacyID}_${item.Latitude}_${item.Longitude}_${item.PharmacyName}_${new Date().getTime()}`}
+                key={item.PharmacyID}
                 ref={(ref) => {
                   if (ref) markerRefs.current[item.PharmacyID] = ref;
                 }}
-                pinColor={selectedPharmacy?.PharmacyID === item.PharmacyID ? '#288B96' : '#FF6347'}
+                pinColor="#FF6347"
                 coordinate={{
                   latitude: item.Latitude,
                   longitude: item.Longitude,
@@ -88,7 +87,7 @@ export default function HomeScreen() {
             ))}
           </MapView>
 
-          <View className="absolute  top-10 z-10 h-[450px]  w-[200px] overflow-auto rounded-br-2xl rounded-tr-2xl bg-white p-3 shadow-lg">
+          <View className="absolute top-10 z-10 h-[450px] w-[200px] overflow-auto rounded-br-2xl rounded-tr-2xl bg-white p-3 shadow-lg">
             <Text className="mb-3 text-lg font-bold text-mainText">Pharmacies</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
               {searchData.map((pharmacy) => (
@@ -110,7 +109,9 @@ export default function HomeScreen() {
                     {pharmacy.PharmacyName}
                   </Text>
 
-                  <Text className="font-tregular text-xs text-secndryText">{`${pharmacy.MatchedDrugNames} matches`}</Text>
+                  {pharmacy?.MatchedDrugNames && (
+                    <Text className="font-tregular text-xs text-secndryText">{`${pharmacy?.MatchedDrugNames} matches`}</Text>
+                  )}
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -150,7 +151,6 @@ export default function HomeScreen() {
         </View>
       )}
       <Loader isLoading={isLoading} />
-      {pathname}
       <BottomBar />
     </>
   );

@@ -6,12 +6,14 @@ import { io } from 'socket.io-client';
 
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { API_BASE_URL } from '../../utilities/api';
+
 export const socket = io(API_BASE_URL?.split('/api')?.[0], {
   transports: ['websocket'],
   autoConnect: true,
 });
 
 export default function Layout() {
+  console.log(API_BASE_URL?.split('/api')?.[0], 'test');
   const router = useRouter();
   const {
     user: { id },
@@ -19,6 +21,7 @@ export default function Layout() {
 
   console.log(id);
   useEffect(() => {
+    console.log('chat layout');
     socket.emit(
       'register',
       {

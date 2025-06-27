@@ -141,7 +141,16 @@ const PharmacyDetails = () => {
       <View className="mt-8 items-center">
         <TouchableOpacity
           className="rounded-xl bg-mainText p-4"
-          onPress={() => router.navigate('/(Chat)/Chat')}>
+          onPress={() =>
+            router.navigate({
+              pathname: '/(Chat)/Chat',
+              params: {
+                ReceiverID: pharmacy?.UserID,
+                UserPhoto: pharmacy?.Logo,
+                ChatTitle: pharmacy?.PharmacyName,
+              },
+            })
+          }>
           <Text className="font-medium text-white">Chat with pahrmacy</Text>
         </TouchableOpacity>
       </View>
