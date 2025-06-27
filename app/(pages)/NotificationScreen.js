@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 import { Navback, Loader } from '../../components';
+import { SearchContext } from '../../context/SearchContext';
 import api from '../../utilities/api';
 
 // [
@@ -32,34 +33,10 @@ import api from '../../utilities/api';
 
 export default function NotificationScreen() {
   const [isLoading, setIsLoading] = useState(false);
-  const [notifications, setNotifications] = useState([]);
 
-  const markAsRead = (id) => {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
-  };
+  const { notifications } = useContext(SearchContext);
 
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-  };
-
-  const handleGetNots = async () => {
-    try {
-      setIsLoading(true);
-      const response = await api.get('notifications');
-
-      setNotifications(response.data.data.notifications);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    handleGetNots();
-  }, []);
-
-  console.log(notifications);
+  // console.log(notifications);
 
   return (
     <View className="flex-1 bg-white p-4">

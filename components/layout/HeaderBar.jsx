@@ -9,11 +9,14 @@ const HeaderBar = () => {
   const { user, isLogged } = useGlobalContext();
 
   const router = useRouter();
+
+  console.log(user);
+
   return (
-    <View className="box-border bg-white px-5   " style={{ paddingVertical: isLogged ? 12 : 20 }}>
+    <View className="box-border bg-white px-5" style={{ paddingVertical: isLogged ? 12 : 20 }}>
       <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center gap-5">
-          <View className="h-6 w-6 rounded-full bg-white">
+        <View className="flex-row items-center gap-3">
+          <View className=" bg-white">
             {(!isLogged || !user?.userImage) && (
               <TouchableOpacity
                 id="userIcon"
@@ -48,10 +51,8 @@ const HeaderBar = () => {
             )}
 
             {isLogged && user?.userImage && (
-              <TouchableOpacity
-                className="h-6 w-6 rounded-full"
-                onPress={() => router.navigate('/ProfileScreen')}>
-                <Image source={user?.userImage} className="object-contain" />
+              <TouchableOpacity onPress={() => router.navigate('/ProfileScreen')}>
+                <Image source={{ uri: user?.userImage }} className="h-10 w-10 rounded-full" />
               </TouchableOpacity>
             )}
           </View>

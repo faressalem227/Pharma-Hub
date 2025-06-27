@@ -165,7 +165,6 @@ const GlobalProvider = ({ children }) => {
   const logOut = async () => {
     try {
       const response = await api.post('auth/signOut');
-
       await SecureStore.deleteItemAsync('accessToken');
       await SecureStore.deleteItemAsync('refreshToken');
       await SecureStore.deleteItemAsync('username');

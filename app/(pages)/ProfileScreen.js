@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState, useContext } from 'react';
 import { View, Text, Image, Switch, TouchableOpacity } from 'react-native';
 import Svg, { Path, G, Defs, ClipPath, Rect } from 'react-native-svg';
+
 import { Navback, Loader } from '../../components';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { SearchContext } from '../../context/SearchContext';
@@ -15,7 +16,7 @@ export default function ProfileScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { logOut, user, setUser } = useGlobalContext();
-  const { savedMeds, savedPharmacies } = useContext(SearchContext);
+  const { savedMeds, savedPharmacies, notifications } = useContext(SearchContext);
 
   const router = useRouter();
 
@@ -207,7 +208,7 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
 
-                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedPharmacies?.length} Pharmacies`}</Text>
+                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedPharmacies?.length || 0} Pharmacies`}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -227,7 +228,7 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
 
-                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedMeds?.length} Medicines`}</Text>
+                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${savedMeds?.length || 0} Medicines`}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -262,7 +263,7 @@ export default function ProfileScreen() {
                   <Text className="pt-2 font-tregular text-xl text-secndryText">Notifications</Text>
                 </View>
 
-                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${11} Notifications`}</Text>
+                <Text className="pt-2 font-tregular text-xl text-secondryInfoText">{`${notifications.length || 0} Notifications`}</Text>
               </TouchableOpacity>
 
               {/* <View className="flex-row items-center justify-between border-b border-b-borderGray pb-1">

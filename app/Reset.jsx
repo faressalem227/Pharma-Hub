@@ -135,8 +135,6 @@ const Reset = () => {
           visibilityTime: 2000,
         });
 
-        setTimeout(() => {}, 2000);
-
         router.replace('/Signin');
       }
     } catch (error) {
