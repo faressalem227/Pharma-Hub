@@ -4,12 +4,11 @@ import * as SecureStore from 'expo-secure-store';
 // export const API_BASE_URL = 'http://192.168.1.20:8080/api/';
 export const API_BASE_URL = 'https://pharmahub.duckdns.org/api/api/';
 export const transcripeUrl = 'https://pharmahub.duckdns.org/api/api/';
-export const streamBaseUrl = 'https://pharmahub.duckdns.org/ai/';
-export const WebSocketServer = 'https://pharmahub.duckdns.org/api/';
+export const streamBaseUrl = 'http://138.201.157.90:8000';
+export const WebSocketServer = 'http://138.201.157.90:8080';
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
-
 api.interceptors.request.use(
   async (config) => {
     try {

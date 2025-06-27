@@ -242,11 +242,11 @@ export default function ReminderScreen() {
                 style={[
                   styles.button,
                   {
-                    backgroundColor: newMed.DrugName.trim() === '' ? '#aaa' : '#3C9D8D',
+                    backgroundColor: newMed?.DrugName?.trim() === '' ? '#aaa' : '#3C9D8D',
                   },
                 ]}
                 onPress={() => setStep('time')}
-                disabled={newMed.DrugName.trim() === ''}>
+                disabled={newMed?.DrugName?.trim() === ''}>
                 <Text style={styles.buttonText}>Next</Text>
               </TouchableOpacity>
 

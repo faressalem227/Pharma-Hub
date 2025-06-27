@@ -6,9 +6,9 @@ const items = [
   { label: 'Profile', path: './ProfileScreen' },
   { label: 'Allergies', path: '/AllergiesScreen' },
   { label: 'Attribute of health', path: '/AttributeScreen' },
-  { label: 'Support', path: '/support' },
-  { label: 'Rate App', path: '/rate' },
-  { label: 'About', path: '/about' },
+  // { label: 'Support', path: '/support' },
+  // { label: 'Rate App', path: '/rate' },
+  // { label: 'About', path: '/about' },
 ];
 export default function MoreScreen() {
   const router = useRouter();
